@@ -1,0 +1,9 @@
+# Bun configuration for İdea Atlası
+[install]
+# Bun will use this for package installation
+auto = true
+
+[test]
+# Test configuration (if needed later)
+coverage = true
+

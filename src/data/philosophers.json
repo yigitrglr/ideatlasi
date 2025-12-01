@@ -1,0 +1,442 @@
+[
+  {
+    "id": 1,
+    "name": "Sokrates",
+    "nameEn": "Socrates",
+    "birthYear": -470,
+    "deathYear": -399,
+    "birthCity": "Atina",
+    "lat": 37.9755,
+    "lng": 23.7348,
+    "period": "Antik Yunan",
+    "school": "Sokratik Okul",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Socrates&backgroundColor=b6e3f4",
+    "biography": "Sokrates, Antik Yunan filozofu ve Batı felsefesinin kurucularından biridir. Atina'da doğmuş ve yaşamıştır. En önemli özelliği, hiçbir yazılı eser bırakmamış olmasıdır. Öğretileri öğrencileri Platon ve Ksenofon aracılığıyla günümüze ulaşmıştır. 'Bildiğim tek şey, hiçbir şey bilmediğimdir' sözüyle tanınır.",
+    "works": [
+      {
+        "title": "Sokratik Diyaloglar",
+        "description": "Platon ve Ksenofon tarafından kaydedilen diyaloglar"
+      }
+    ],
+    "keyIdeas": [
+      "Sokratik Yöntem",
+      "Ahlak felsefesi",
+      "Bilgi ve erdem ilişkisi"
+    ],
+    "influences": [],
+    "influenced": ["Platon", "Ksenofon", "Aristippos"]
+  },
+  {
+    "id": 2,
+    "name": "Platon",
+    "nameEn": "Plato",
+    "birthYear": -428,
+    "deathYear": -348,
+    "birthCity": "Atina",
+    "lat": 37.9755,
+    "lng": 23.7348,
+    "period": "Antik Yunan",
+    "school": "Akademi",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Plato&backgroundColor=c7d2fe",
+    "biography": "Platon, Antik Yunan filozofu, matematikçi ve Sokrates'in öğrencisidir. Atina'da Akademi'yi kurmuştur. En ünlü eseri 'Devlet'tir. İdealar kuramı ve mağara alegorisi ile tanınır. Aristoteles'in hocasıdır.",
+    "works": [
+      {
+        "title": "Devlet",
+        "description": "Adalet, ideal devlet ve filozof-kral kavramlarını ele alan diyalog"
+      },
+      {
+        "title": "Sokrates'in Savunması",
+        "description": "Sokrates'in mahkeme savunması"
+      },
+      {
+        "title": "Şölen",
+        "description": "Aşk ve güzellik üzerine diyalog"
+      },
+      {
+        "title": "Phaidon",
+        "description": "Ruhun ölümsüzlüğü üzerine diyalog"
+      }
+    ],
+    "keyIdeas": [
+      "İdealar kuramı",
+      "Mağara alegorisi",
+      "Filozof-kral",
+      "Ruhun üç parçası"
+    ],
+    "influences": ["Sokrates", "Pythagoras", "Herakleitos"],
+    "influenced": ["Aristoteles", "Plotinos", "Augustinus"]
+  },
+  {
+    "id": 3,
+    "name": "Aristoteles",
+    "nameEn": "Aristotle",
+    "birthYear": -384,
+    "deathYear": -322,
+    "birthCity": "Stagira",
+    "lat": 40.5193,
+    "lng": 22.2014,
+    "period": "Antik Yunan",
+    "school": "Lykeion",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Aristotle&backgroundColor=ffd5dc",
+    "biography": "Aristoteles, Antik Yunan filozofu ve bilim insanıdır. Platon'un öğrencisi ve Büyük İskender'in hocasıdır. Atina'da Lykeion'u kurmuştur. Mantık, metafizik, etik, siyaset, biyoloji ve daha birçok alanda eserler vermiştir.",
+    "works": [
+      {
+        "title": "Metafizik",
+        "description": "Varlık, neden ve ilk ilkeler üzerine"
+      },
+      {
+        "title": "Nikomakhos'a Etik",
+        "description": "Ahlak felsefesi ve erdem üzerine"
+      },
+      {
+        "title": "Politika",
+        "description": "Devlet yönetimi ve siyaset teorisi"
+      },
+      {
+        "title": "Organon",
+        "description": "Mantık üzerine altı eserden oluşan koleksiyon"
+      }
+    ],
+    "keyIdeas": [
+      "Mantık ve kategoriler",
+      "Dört neden kuramı",
+      "Altın orta",
+      "Form ve madde"
+    ],
+    "influences": ["Platon", "Sokrates", "Empedokles"],
+    "influenced": ["İbn Sina", "Aquinalı Thomas", "Kant"]
+  },
+  {
+    "id": 4,
+    "name": "Epikuros",
+    "nameEn": "Epicurus",
+    "birthYear": -341,
+    "deathYear": -270,
+    "birthCity": "Samos",
+    "lat": 37.7544,
+    "lng": 26.9778,
+    "period": "Helenistik Dönem",
+    "school": "Epikürosçuluk",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Epicurus&backgroundColor=ffeaa7",
+    "biography": "Epikuros, Helenistik dönem filozofu ve Epikürosçuluk okulunun kurucusudur. Atina'da 'Bahçe' adlı okulunu kurmuştur. Hazcılık ve atomculuk görüşleriyle tanınır. 'Acıdan kaçınma ve hazza ulaşma' felsefesini savunmuştur.",
+    "works": [
+      {
+        "title": "Mektuplar",
+        "description": "Felsefi görüşlerini açıkladığı mektuplar"
+      },
+      {
+        "title": "Ana Düşünceler",
+        "description": "Temel felsefi ilkeler"
+      }
+    ],
+    "keyIdeas": [
+      "Hazcılık",
+      "Atomculuk",
+      "Tanrı korkusunun reddi",
+      "Ölüm korkusunun aşılması"
+    ],
+    "influences": ["Demokritos", "Aristippos"],
+    "influenced": ["Lucretius", "Gassendi"]
+  },
+  {
+    "id": 5,
+    "name": "Zenon",
+    "nameEn": "Zeno of Citium",
+    "birthYear": -334,
+    "deathYear": -262,
+    "birthCity": "Kition",
+    "lat": 34.9167,
+    "lng": 33.6167,
+    "period": "Helenistik Dönem",
+    "school": "Stoacılık",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Zeno&backgroundColor=dda15e",
+    "biography": "Zenon, Stoacılık okulunun kurucusudur. Kıbrıs'ta doğmuş, Atina'da felsefe yapmıştır. Stoa Poikile'de (Boyalı Sütun) ders vermiştir. Doğaya uygun yaşama ve erdem felsefesiyle tanınır.",
+    "works": [
+      {
+        "title": "Stoacı Doktrinler",
+        "description": "Stoacılık öğretileri"
+      }
+    ],
+    "keyIdeas": [
+      "Doğaya uygun yaşama",
+      "Erdem tek iyiliktir",
+      "Apatheia (duygusuzluk)",
+      "Kozmopolitizm"
+    ],
+    "influences": ["Krates", "Kynikler"],
+    "influenced": ["Kleanthes", "Krisippos", "Marcus Aurelius"]
+  },
+  {
+    "id": 6,
+    "name": "Plotinos",
+    "nameEn": "Plotinus",
+    "birthYear": 204,
+    "deathYear": 270,
+    "birthCity": "Lykopolis",
+    "lat": 27.1833,
+    "lng": 31.1667,
+    "period": "Geç Antik Çağ",
+    "school": "Yeni Platonculuk",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Plotinus&backgroundColor=f4a261",
+    "biography": "Plotinos, Yeni Platonculuk okulunun kurucusudur. Mısır'da doğmuş, Roma'da öğretmenlik yapmıştır. Platon'un felsefesini geliştirerek mistik bir sistem kurmuştur. 'Bir'den (The One) çıkış (emanation) kuramıyla tanınır.",
+    "works": [
+      {
+        "title": "Enneadlar",
+        "description": "54 risaleden oluşan felsefi eser koleksiyonu"
+      }
+    ],
+    "keyIdeas": [
+      "Bir'den çıkış",
+      "Ruhun yükselişi",
+      "Mistik deneyim",
+      "Üç hipostaz"
+    ],
+    "influences": ["Platon", "Aristoteles", "Numenios"],
+    "influenced": ["Augustinus", "Pseudo-Dionysios", "Ficino"]
+  },
+  {
+    "id": 7,
+    "name": "Augustinus",
+    "nameEn": "Augustine of Hippo",
+    "birthYear": 354,
+    "deathYear": 430,
+    "birthCity": "Tagaste",
+    "lat": 36.1833,
+    "lng": 7.4000,
+    "period": "Geç Antik Çağ",
+    "school": "Hıristiyan Felsefesi",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Augustine&backgroundColor=e76f51",
+    "biography": "Augustinus, Hıristiyan teolog ve filozofudur. Kuzey Afrika'da doğmuş, Hippo'da piskoposluk yapmıştır. Platon ve Plotinos'tan etkilenmiştir. Hıristiyan felsefesinin temellerini atmıştır.",
+    "works": [
+      {
+        "title": "İtiraflar",
+        "description": "Otobiyografik ve felsefi eser"
+      },
+      {
+        "title": "Tanrı Devleti",
+        "description": "Tarih felsefesi ve teoloji"
+      },
+      {
+        "title": "Üçlü Birlik Üzerine",
+        "description": "Teolojik eser"
+      }
+    ],
+    "keyIdeas": [
+      "İtiraf ve dönüşüm",
+      "Tanrı Devleti",
+      "Zamanın doğası",
+      "Özgür irade ve lütuf"
+    ],
+    "influences": ["Platon", "Plotinos", "Ambrose"],
+    "influenced": ["Aquinalı Thomas", "Luther", "Calvin"]
+  },
+  {
+    "id": 8,
+    "name": "Boethius",
+    "nameEn": "Anicius Manlius Severinus Boethius",
+    "birthYear": 480,
+    "deathYear": 524,
+    "birthCity": "Roma",
+    "lat": 41.9028,
+    "lng": 12.4964,
+    "period": "Orta Çağ",
+    "school": "Neoplatonizm",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Boethius&backgroundColor=2a9d8f",
+    "biography": "Boethius, Geç Antik Çağ filozofu, devlet adamı ve bilim insanıdır. Roma'da doğmuş ve yaşamıştır. Aristoteles'in eserlerini Latince'ye çevirmiştir. 'Felsefenin Tesellisi' adlı eseriyle tanınır.",
+    "works": [
+      {
+        "title": "Felsefenin Tesellisi",
+        "description": "Hapishanede yazdığı felsefi ve edebi eser"
+      },
+      {
+        "title": "Mantık Üzerine",
+        "description": "Aristoteles'in mantık eserlerinin çevirisi ve yorumu"
+      }
+    ],
+    "keyIdeas": [
+      "Kader ve özgür irade",
+      "Mutluluk ve iyilik",
+      "Mantık ve dil",
+      "Müzik teorisi"
+    ],
+    "influences": ["Platon", "Aristoteles", "Plotinos"],
+    "influenced": ["Aquinalı Thomas", "Dante", "Chaucer"]
+  },
+  {
+    "id": 9,
+    "name": "Thales",
+    "nameEn": "Thales of Miletus",
+    "birthYear": -624,
+    "deathYear": -546,
+    "birthCity": "Miletos",
+    "lat": 37.5311,
+    "lng": 27.2794,
+    "period": "Antik Yunan",
+    "school": "Miletos Okulu",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Thales&backgroundColor=264653",
+    "biography": "Thales, Antik Yunan filozofu, matematikçi ve astronomdur. Miletos Okulu'nun kurucusu ve Batı felsefesinin ilk filozofu kabul edilir. 'Her şeyin kaynağı sudur' önermesiyle tanınır. Güneş tutulmasını önceden tahmin ettiği söylenir.",
+    "works": [
+      {
+        "title": "Doğa Üzerine",
+        "description": "Doğa felsefesi üzerine eserler (günümüze ulaşmamış)"
+      }
+    ],
+    "keyIdeas": [
+      "Her şeyin kaynağı su",
+      "Doğa felsefesi",
+      "Rasyonel düşünce",
+      "Matematik ve geometri"
+    ],
+    "influences": [],
+    "influenced": ["Anaksimandros", "Anaksimenes", "Herakleitos"]
+  },
+  {
+    "id": 10,
+    "name": "Herakleitos",
+    "nameEn": "Heraclitus",
+    "birthYear": -535,
+    "deathYear": -475,
+    "birthCity": "Efes",
+    "lat": 37.9397,
+    "lng": 27.3406,
+    "period": "Antik Yunan",
+    "school": "Efes Okulu",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Heraclitus&backgroundColor=e63946",
+    "biography": "Herakleitos, Antik Yunan filozofudur. 'Değişmeyen tek şey değişimin kendisidir' sözüyle tanınır. Ateşi evrenin temel elementi olarak görür. Logos (akıl) kavramını felsefeye kazandırmıştır. Gizemli ve zor anlaşılır yazıları nedeniyle 'Karanlık Filozof' olarak anılır.",
+    "works": [
+      {
+        "title": "Doğa Üzerine",
+        "description": "Fragmanlar halinde günümüze ulaşan eser"
+      }
+    ],
+    "keyIdeas": [
+      "Her şey akar (Panta rhei)",
+      "Ateş evrenin temelidir",
+      "Logos (akıl)",
+      "Karşıtların birliği"
+    ],
+    "influences": ["Thales", "Anaksimandros"],
+    "influenced": ["Platon", "Stoacılar", "Hegel"]
+  },
+  {
+    "id": 11,
+    "name": "Diogenes",
+    "nameEn": "Diogenes of Sinope",
+    "birthYear": -412,
+    "deathYear": -323,
+    "birthCity": "Sinope",
+    "lat": 42.0267,
+    "lng": 35.1500,
+    "period": "Antik Yunan",
+    "school": "Kynikler",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Diogenes&backgroundColor=06d6a0",
+    "biography": "Diogenes, Kynik felsefe okulunun en ünlü temsilcisidir. Sinope'de doğmuş, Atina'da yaşamıştır. Bir fıçıda yaşayarak toplumsal normları reddetmiştir. 'Gölge etme başka ihsan istemem' sözüyle tanınır. Büyük İskender'e 'Güneşimden çekil' demiştir.",
+    "works": [
+      {
+        "title": "Diyaloglar",
+        "description": "Eserleri günümüze ulaşmamış, anekdotlar ve hikayelerle tanınır"
+      }
+    ],
+    "keyIdeas": [
+      "Kynik felsefe",
+      "Toplumsal normların reddi",
+      "Doğaya dönüş",
+      "Basit yaşam"
+    ],
+    "influences": ["Antisthenes", "Sokrates"],
+    "influenced": ["Krates", "Kleanthes", "Stoacılar"]
+  },
+  {
+    "id": 12,
+    "name": "Marcus Aurelius",
+    "nameEn": "Marcus Aurelius",
+    "birthYear": 121,
+    "deathYear": 180,
+    "birthCity": "Roma",
+    "lat": 41.9028,
+    "lng": 12.4964,
+    "period": "Geç Antik Çağ",
+    "school": "Stoacılık",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=MarcusAurelius&backgroundColor=118ab2",
+    "biography": "Marcus Aurelius, Roma İmparatoru ve Stoacı filozoftur. 'Düşünceler' (Meditations) adlı eseri Stoacı felsefenin en önemli metinlerinden biridir. Savaş sırasında yazdığı bu eser, kişisel gelişim ve ahlak üzerine derin düşünceler içerir. 'Filozof İmparator' olarak anılır.",
+    "works": [
+      {
+        "title": "Düşünceler (Meditations)",
+        "description": "Kişisel günlük ve felsefi düşünceler"
+      }
+    ],
+    "keyIdeas": [
+      "Stoacı ahlak",
+      "Kendini bilme",
+      "Ölüm kabulü",
+      "Evrensel akıl"
+    ],
+    "influences": ["Epiktetos", "Zenon", "Seneca"],
+    "influenced": ["Modern Stoacılık", "Kişisel gelişim felsefesi"]
+  },
+  {
+    "id": 13,
+    "name": "Seneca",
+    "nameEn": "Lucius Annaeus Seneca",
+    "birthYear": -4,
+    "deathYear": 65,
+    "birthCity": "Corduba",
+    "lat": 37.8882,
+    "lng": -4.7794,
+    "period": "Geç Antik Çağ",
+    "school": "Stoacılık",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Seneca&backgroundColor=073b4c",
+    "biography": "Seneca, Roma Stoacı filozofu, devlet adamı ve oyun yazarıdır. İspanya'da doğmuş, Roma'da yaşamıştır. Neron'un danışmanı olmuş, ancak sonunda intihar etmeye zorlanmıştır. Etik ve ahlak üzerine yazdığı mektuplar ve denemelerle tanınır.",
+    "works": [
+      {
+        "title": "Lucilius'a Mektuplar",
+        "description": "Stoacı felsefe üzerine 124 mektup"
+      },
+      {
+        "title": "Ahlaki Denemeler",
+        "description": "Öfke, merhamet, mutluluk üzerine denemeler"
+      },
+      {
+        "title": "Trajediler",
+        "description": "Dokuz trajedi oyunu"
+      }
+    ],
+    "keyIdeas": [
+      "Stoacı etik",
+      "Öfke kontrolü",
+      "Zamanın değeri",
+      "Mutluluk ve erdem"
+    ],
+    "influences": ["Zenon", "Epiktetos"],
+    "influenced": ["Marcus Aurelius", "Montaigne", "Modern Stoacılık"]
+  },
+  {
+    "id": 14,
+    "name": "Pythagoras",
+    "nameEn": "Pythagoras",
+    "birthYear": -570,
+    "deathYear": -495,
+    "birthCity": "Samos",
+    "lat": 37.7544,
+    "lng": 26.9778,
+    "period": "Antik Yunan",
+    "school": "Pythagorasçılık",
+    "photo": "https://api.dicebear.com/7.x/avataaars/svg?seed=Pythagoras&backgroundColor=ffd166",
+    "biography": "Pythagoras, Antik Yunan filozofu, matematikçi ve mistiktir. Samos'ta doğmuş, Güney İtalya'da Kroton'da okulunu kurmuştur. Matematik, müzik ve ruh göçü teorileriyle tanınır. Ünlü 'Pisagor Teoremi' ile matematik tarihine geçmiştir.",
+    "works": [
+      {
+        "title": "Pythagorasçı Öğretiler",
+        "description": "Öğretileri öğrencileri tarafından aktarılmıştır"
+      }
+    ],
+    "keyIdeas": [
+      "Sayılar evrenin temelidir",
+      "Ruh göçü (reenkarnasyon)",
+      "Müzik ve matematik ilişkisi",
+      "Pisagor Teoremi"
+    ],
+    "influences": ["Thales", "Anaksimandros"],
+    "influenced": ["Platon", "Eukleides", "Modern matematik"]
+  }
+]
+
