@@ -319,16 +319,16 @@ function MapPage() {
       )}
 
       {/* Legend */}
-      <div className="absolute bottom-4 right-4 left-4 sm:left-auto z-[1000] bg-background/95 backdrop-blur-sm border border-border rounded-lg p-3 sm:p-4 shadow-lg animate-fade-in max-w-xs sm:max-w-none">
-        <h4 className="text-xs sm:text-sm font-semibold mb-2">Dönemler</h4>
-        <div className="space-y-1 text-xs">
+      <div className="absolute bottom-3 right-3 left-3 sm:left-auto z-[1000] bg-background/95 backdrop-blur-sm border border-border rounded-lg p-2 sm:p-3 shadow-lg animate-fade-in max-w-xs sm:max-w-none">
+        <h4 className="text-[11px] sm:text-sm font-semibold mb-1">Dönemler</h4>
+        <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs leading-tight">
           {Object.entries(periodColors).map(([period, color]) => (
-            <div key={period} className="flex items-center gap-2">
+            <div key={period} className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/60">
               <div
-                className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-white flex-shrink-0"
+                className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-white flex-shrink-0"
                 style={{ backgroundColor: color }}
               />
-              <span className="truncate">{period}</span>
+              <span className="truncate max-w-[90px] sm:max-w-none">{period}</span>
             </div>
           ))}
         </div>

@@ -5,24 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>İdea Atlası - Felsefe Haritası</title>
     <script>
-      // GitHub Pages SPA routing fix
-      const path = window.location.pathname;
-      const basePath = '/ideatlasi/';
-      
-      // Get the path after the base path
-      let routePath = path;
-      if (path.startsWith(basePath)) {
-        routePath = path.slice(basePath.length);
-      } else if (path.startsWith('/')) {
-        routePath = path.slice(1);
-      }
-      
-      // Remove leading/trailing slashes except for root
-      routePath = routePath.replace(/^\/+|\/+$/g, '');
-      
-      // Build redirect URL
-      const redirectUrl = basePath + 'index.html' + (routePath ? '/' + routePath : '');
-      window.location.replace(redirectUrl);
+      // Always send unknown routes back to the site root on GitHub Pages
+      window.location.replace('https://yigitrglr.github.io/ideatlasi/');
     </script>
   </head>
   <body>
