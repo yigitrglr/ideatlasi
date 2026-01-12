@@ -62,7 +62,7 @@ const Sheet = ({ open, onOpenChange, children, side = "right" }) => {
         aria-label="Close menu"
       />
       <div className={cn(
-        "fixed z-50 w-full sm:w-80 bg-background shadow-lg transition-all duration-300",
+        "fixed z-50 w-full sm:w-80 bg-background shadow-lg transition-all duration-500 ease-out",
         sideClasses[side],
         animationClass
       )}>

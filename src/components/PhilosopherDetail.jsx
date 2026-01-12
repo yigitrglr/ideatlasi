@@ -1,12 +1,14 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Calendar, MapPin, Book, Lightbulb, Users, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePhilosophers } from '@/context/PhilosopherContext'
+import { ImageSkeleton } from '@/components/Skeleton'
 
 const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, onOpenChange }) {
   const { toggleFavorite, isFavorite } = usePhilosophers()
+  const [imageLoading, setImageLoading] = useState(true)
   
   if (!philosopher) return null
 
@@ -14,35 +16,42 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange} title={philosopher.name}>
-      <DialogContent className="space-y-4 sm:space-y-6 text-sm sm:text-base">
+      <DialogContent className="space-y-3 sm:space-y-6 text-sm sm:text-base">
         {/* Fotoğraf ve Temel Bilgiler */}
-        <div className="flex flex-col md:flex-row gap-3 sm:gap-6 animate-fade-in">
-          <div className="flex-shrink-0 mx-auto md:mx-0">
+        <div className="flex flex-col md:flex-row gap-2 sm:gap-6 animate-fade-in">
+          <div className="flex-shrink-0 mx-auto md:mx-0 relative">
+            {imageLoading && (
+              <ImageSkeleton className="w-20 h-20 sm:w-44 sm:h-44 absolute inset-0" />
+            )}
             <img
               src={philosopher.photo}
               alt={philosopher.name}
-              className="w-28 h-28 sm:w-44 sm:h-44 object-cover rounded-lg border transition-transform duration-300 hover:scale-105"
+              className={`w-20 h-20 sm:w-44 sm:h-44 object-cover rounded-lg border transition-all duration-500 ease-out hover:scale-105 ${
+                imageLoading ? 'opacity-0' : 'opacity-100'
+              }`}
               loading="lazy"
+              onLoad={() => setImageLoading(false)}
               onError={(e) => {
                 e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(philosopher.name)}&backgroundColor=b6e3f4`
+                setImageLoading(false)
               }}
             />
           </div>
-          <div className="flex-1 space-y-3 sm:space-y-4">
+          <div className="flex-1 space-y-2 sm:space-y-4">
             <div className="flex items-start justify-between relative">
-              <div className="flex-1 pr-10">
-                <h3 className="text-lg sm:text-2xl font-bold leading-tight">{philosopher.name}</h3>
-                <p className="text-xs sm:text-base text-muted-foreground italic">{philosopher.nameEn}</p>
+              <div className="flex-1 pr-8 sm:pr-10">
+                <h3 className="text-base sm:text-2xl font-bold leading-tight">{philosopher.name}</h3>
+                <p className="text-xs sm:text-base text-muted-foreground italic mt-0.5">{philosopher.nameEn}</p>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => toggleFavorite(philosopher)}
-                className="transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-110 active:scale-95 absolute top-0 right-0"
+                className="transition-all duration-500 ease-out hover:scale-110 active:scale-95 absolute top-0 right-0"
                 aria-label={favorite ? "Favorilerden çıkar" : "Favorilere ekle"}
               >
                 <Star
-                  className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                  className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-500 ease-out ${
                     favorite
                       ? 'fill-yellow-400 text-yellow-400 animate-bounce-in'
                       : 'text-muted-foreground hover:text-yellow-400 hover:scale-110'
@@ -77,8 +86,8 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
         {/* Biyografi */}
         <div>
-          <h4 className="text-base sm:text-lg font-semibold mb-2">Biyografi</h4>
-          <p className="text-sm sm:text-base leading-relaxed text-foreground">{philosopher.biography}</p>
+          <h4 className="text-sm sm:text-lg font-semibold mb-1.5 sm:mb-2">Biyografi</h4>
+          <p className="text-xs sm:text-base leading-relaxed text-foreground">{philosopher.biography}</p>
         </div>
 
         {/* Eserler */}
@@ -92,7 +101,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
               {philosopher.works.map((work, index) => (
                 <div 
                   key={`work-${philosopher.id}-${index}-${work.title}`} 
-                  className="p-2 sm:p-3 bg-muted rounded-lg transition-all duration-200 hover:bg-muted/80 hover:shadow-md animate-fade-in"
+                  className="p-2 sm:p-3 bg-muted rounded-lg transition-all duration-500 ease-out hover:bg-muted/80 hover:shadow-md animate-fade-in"
                   style={{ animationDelay: `${0.15 + index * 0.05}s` }}
                 >
                   <p className="font-medium text-sm sm:text-base">{work.title}</p>
@@ -116,7 +125,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
               {philosopher.keyIdeas.map((idea, index) => (
                 <span
                   key={`idea-${philosopher.id}-${index}-${idea}`}
-                  className="px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs sm:text-sm transition-all duration-200 hover:bg-primary/20 hover:scale-105 animate-fade-in"
+                  className="px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs sm:text-sm transition-all duration-500 ease-out hover:bg-primary/20 hover:scale-105 animate-fade-in"
                   style={{ animationDelay: `${0.25 + index * 0.05}s` }}
                 >
                   {idea}
@@ -141,7 +150,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
                     {philosopher.influences.map((name, index) => (
                       <span
                         key={`influence-${philosopher.id}-${index}-${name}`}
-                        className="px-2 py-1 bg-secondary rounded text-xs sm:text-sm transition-all duration-200 hover:bg-secondary/80 hover:scale-105 animate-fade-in"
+                        className="px-2 py-1 bg-secondary rounded text-xs sm:text-sm transition-all duration-500 ease-out hover:bg-secondary/80 hover:scale-105 animate-fade-in"
                         style={{ animationDelay: `${0.35 + index * 0.03}s` }}
                       >
                         {name}
@@ -157,7 +166,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
                     {philosopher.influenced.map((name, index) => (
                       <span
                         key={`influenced-${philosopher.id}-${index}-${name}`}
-                        className="px-2 py-1 bg-secondary rounded text-xs sm:text-sm transition-all duration-200 hover:bg-secondary/80 hover:scale-105 animate-fade-in"
+                        className="px-2 py-1 bg-secondary rounded text-xs sm:text-sm transition-all duration-500 ease-out hover:bg-secondary/80 hover:scale-105 animate-fade-in"
                         style={{ animationDelay: `${0.4 + index * 0.03}s` }}
                       >
                         {name}

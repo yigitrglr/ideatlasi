@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { Menu, Search, Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,6 +9,7 @@ import { usePhilosophers } from '@/context/PhilosopherContext'
 import { useTheme } from '@/context/ThemeContext'
 import PhilosopherDetail from '@/components/PhilosopherDetail'
 import SearchAndFilters from '@/components/SearchAndFilters'
+import { ImageSkeleton } from '@/components/Skeleton'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
@@ -34,6 +36,39 @@ const periodColors = {
   'Alman İdealizmi': '#6366f1', // Indigo
   '19. Yüzyıl Felsefesi': '#14b8a6', // Teal
   '20. Yüzyıl Felsefesi': '#8b5cf6', // Purple
+}
+
+// Popup image component with skeleton
+function PhilosopherPopupImage({ philosopher }) {
+  const [imageLoading, setImageLoading] = useState(true)
+  
+  return (
+    <div className="relative mb-2">
+      {imageLoading && (
+        <ImageSkeleton className="w-16 h-16 absolute inset-0 rounded" />
+      )}
+      <img
+        src={philosopher.photo}
+        alt={philosopher.name}
+        className={`w-16 h-16 object-cover rounded transition-opacity duration-500 ease-out ${
+          imageLoading ? 'opacity-0' : 'opacity-100'
+        }`}
+        loading="lazy"
+        onLoad={() => setImageLoading(false)}
+        onError={(e) => {
+          e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(philosopher.name)}&backgroundColor=b6e3f4`
+          setImageLoading(false)
+        }}
+      />
+    </div>
+  )
+}
+
+PhilosopherPopupImage.propTypes = {
+  philosopher: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    photo: PropTypes.string,
+  }).isRequired,
 }
 
 // Özel marker icon oluştur
@@ -172,7 +207,7 @@ function MapPage() {
               size="icon"
               onClick={toggleSearch}
               title="Ara ve Filtrele (Ctrl+K)"
-              className={`transition-all duration-300 hover:scale-110 ${searchOpen ? 'bg-accent' : ''}`}
+              className={`transition-all duration-500 ease-out hover:scale-110 ${searchOpen ? 'bg-accent' : ''}`}
             >
               <Search className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
             </Button>
@@ -181,7 +216,7 @@ function MapPage() {
               size="icon"
               onClick={toggleTheme}
               title="Tema Değiştir"
-              className="transition-transform duration-300 hover:rotate-180"
+              className="transition-transform duration-500 ease-out hover:rotate-180"
             >
               {theme === 'dark' ? (
                 <Sun className="h-5 w-5 transition-transform duration-300" />
@@ -194,7 +229,7 @@ function MapPage() {
               size="icon"
               onClick={toggleMenu}
               title="Menü (Ctrl+M)"
-              className={`transition-all duration-300 hover:scale-110 ${menuOpen ? 'bg-accent' : ''}`}
+              className={`transition-all duration-500 ease-out hover:scale-110 ${menuOpen ? 'bg-accent' : ''}`}
             >
               <Menu className="h-5 w-5 transition-transform duration-300 group-hover:rotate-90" />
             </Button>
@@ -279,15 +314,7 @@ function MapPage() {
             >
             <Popup className="animate-slide-up">
               <div className="p-2 min-w-[200px]">
-                <img
-                  src={philosopher.photo}
-                  alt={philosopher.name}
-                  className="w-16 h-16 object-cover rounded mb-2"
-                  loading="lazy"
-                  onError={(e) => {
-                    e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(philosopher.name)}&backgroundColor=b6e3f4`
-                  }}
-                />
+                <PhilosopherPopupImage philosopher={philosopher} />
                 <h3 className="font-bold text-lg mb-1 animate-fade-in">{philosopher.name}</h3>
                 <p className="text-sm text-muted-foreground mb-2">{philosopher.birthCity}</p>
                 <p className="text-xs text-muted-foreground mb-2">
@@ -297,7 +324,7 @@ function MapPage() {
                 <p className="text-sm mb-2">{philosopher.school}</p>
                 <Button
                   size="sm"
-                  className="w-full mt-2 transition-all duration-200 hover:scale-105"
+                  className="w-full mt-2 transition-all duration-500 ease-out hover:scale-105"
                   onClick={() => handleMarkerClick(philosopher)}
                 >
                   Detayları Gör
@@ -319,18 +346,36 @@ function MapPage() {
       )}
 
       {/* Legend */}
-      <div className="absolute bottom-3 right-3 left-3 sm:left-auto z-[1000] bg-background/95 backdrop-blur-sm border border-border rounded-lg p-2 sm:p-3 shadow-lg animate-fade-in max-w-xs sm:max-w-none">
-        <h4 className="text-[11px] sm:text-sm font-semibold mb-1">Dönemler</h4>
-        <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs leading-tight">
-          {Object.entries(periodColors).map(([period, color]) => (
-            <div key={period} className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/60">
-              <div
-                className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-white flex-shrink-0"
-                style={{ backgroundColor: color }}
-              />
-              <span className="truncate max-w-[90px] sm:max-w-none">{period}</span>
-            </div>
-          ))}
+      <div className="absolute bottom-3 right-3 left-3 sm:left-auto z-[1000] bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg animate-fade-in">
+        {/* Mobile: compact pill style */}
+        <div className="sm:hidden p-2">
+          <h4 className="text-[10px] font-semibold mb-1.5 text-center">Dönemler</h4>
+          <div className="flex flex-wrap gap-1.5 text-[9px] leading-tight justify-center">
+            {Object.entries(periodColors).map(([period, color]) => (
+              <div key={period} className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-muted/70">
+                <div
+                  className="w-2 h-2 rounded-full border border-white/80 flex-shrink-0"
+                  style={{ backgroundColor: color }}
+                />
+                <span className="truncate max-w-[70px]">{period}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Desktop: clean vertical list */}
+        <div className="hidden sm:block p-3 min-w-[180px]">
+          <h4 className="text-sm font-semibold mb-2">Dönemler</h4>
+          <div className="space-y-1.5 text-xs">
+            {Object.entries(periodColors).map(([period, color]) => (
+              <div key={period} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full border-2 border-white flex-shrink-0 shadow-sm"
+                  style={{ backgroundColor: color }}
+                />
+                <span className="truncate">{period}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -1,18 +1,28 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Settings, Info, Play } from 'lucide-react'
+import { useTheme } from '@/context/ThemeContext'
 
 function MenuPage() {
   const navigate = useNavigate()
+  const { theme } = useTheme()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
+    <div 
+      className="min-h-screen flex items-center justify-center transition-all duration-500 ease-out"
+      style={{
+        background: `linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--muted)))`
+      }}
+    >
       <div className="text-center space-y-8 p-4 sm:p-8 animate-fade-in">
         <div className="space-y-4 animate-fade-in">
-          <h1 className="text-4xl sm:text-6xl font-bold text-foreground mb-2 animate-fade-in">
+          <h1 className="text-4xl sm:text-6xl font-bold mb-2 animate-fade-in transition-colors duration-500 ease-out text-foreground">
             İdea Atlası
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-md mx-auto px-4 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <p 
+            className="text-lg sm:text-xl max-w-md mx-auto px-4 animate-fade-in transition-colors duration-500 ease-out text-muted-foreground"
+            style={{ animationDelay: '0.1s' }}
+          >
             Filozofların dünyasını keşfedin
           </p>
         </div>
@@ -20,7 +30,7 @@ function MenuPage() {
         <div className="flex flex-col gap-4 max-w-sm mx-auto">
           <Button
             size="lg"
-            className="w-full h-14 text-lg transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:shadow-lg animate-fade-in"
+            className="w-full h-14 text-lg transition-all duration-500 ease-out hover:scale-105 hover:shadow-lg animate-fade-in"
             style={{ animationDelay: '0.2s' }}
             onClick={() => navigate('/map')}
           >
@@ -31,7 +41,7 @@ function MenuPage() {
           <Button
             variant="outline"
             size="lg"
-            className="w-full h-14 text-lg transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 animate-fade-in"
+            className="w-full h-14 text-lg transition-all duration-500 ease-out hover:scale-105 animate-fade-in"
             style={{ animationDelay: '0.3s' }}
             onClick={() => navigate('/settings')}
           >
@@ -42,7 +52,7 @@ function MenuPage() {
           <Button
             variant="outline"
             size="lg"
-            className="w-full h-14 text-lg transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 animate-fade-in"
+            className="w-full h-14 text-lg transition-all duration-500 ease-out hover:scale-105 animate-fade-in"
             style={{ animationDelay: '0.4s' }}
             onClick={() => navigate('/about')}
           >

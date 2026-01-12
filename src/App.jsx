@@ -12,13 +12,18 @@ const MapPage = lazy(() => import('./pages/MapPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
 
+import { PhilosopherCardSkeleton } from './components/Skeleton'
+
 // Loading component
 function LoadingFallback() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center animate-fade-in">
-      <div className="text-center space-y-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto transition-all duration-300"></div>
+      <div className="text-center space-y-4 w-full max-w-md px-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto transition-all duration-500 ease-out"></div>
         <p className="text-muted-foreground animate-pulse">Yükleniyor...</p>
+        <div className="mt-8 space-y-4">
+          <PhilosopherCardSkeleton />
+        </div>
       </div>
     </div>
   )
