@@ -12,7 +12,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.js'],
     css: true,
-    // Vitest 4.0: Use array format for setupFiles
+    // Vitest 4.0: Use array format
     reporters: ['default'],
   },
   resolve: {
