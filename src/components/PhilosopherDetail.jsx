@@ -16,12 +16,12 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
     <Dialog open={open} onOpenChange={onOpenChange} title={philosopher.name}>
       <DialogContent className="space-y-6">
         {/* Fotoğraf ve Temel Bilgiler */}
-        <div className="flex flex-col md:flex-row gap-6 animate-fade-in">
-          <div className="flex-shrink-0">
+        <div className="flex flex-col md:flex-row gap-4 sm:gap-6 animate-fade-in">
+          <div className="flex-shrink-0 mx-auto md:mx-0">
             <img
               src={philosopher.photo}
               alt={philosopher.name}
-              className="w-48 h-48 object-cover rounded-lg border transition-transform duration-300 hover:scale-105"
+              className="w-32 h-32 sm:w-48 sm:h-48 object-cover rounded-lg border transition-transform duration-300 hover:scale-105"
               loading="lazy"
               onError={(e) => {
                 e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(philosopher.name)}&backgroundColor=b6e3f4`
@@ -30,19 +30,19 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
           </div>
           <div className="flex-1 space-y-4">
             <div className="flex items-start justify-between relative">
-              <div>
-                <h3 className="text-2xl font-bold">{philosopher.name}</h3>
-                <p className="text-muted-foreground italic">{philosopher.nameEn}</p>
+              <div className="flex-1 pr-10">
+                <h3 className="text-xl sm:text-2xl font-bold">{philosopher.name}</h3>
+                <p className="text-sm sm:text-base text-muted-foreground italic">{philosopher.nameEn}</p>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => toggleFavorite(philosopher)}
-                className="transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-110 active:scale-95 absolute top-0 right-0 translate-x-[-8px] translate-y-[4px]"
+                className="transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-110 active:scale-95 absolute top-0 right-0"
                 aria-label={favorite ? "Favorilerden çıkar" : "Favorilere ekle"}
               >
                 <Star
-                  className={`h-6 w-6 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                  className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
                     favorite
                       ? 'fill-yellow-400 text-yellow-400 animate-bounce-in'
                       : 'text-muted-foreground hover:text-yellow-400 hover:scale-110'
@@ -51,7 +51,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
               </Button>
             </div>
             
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span>

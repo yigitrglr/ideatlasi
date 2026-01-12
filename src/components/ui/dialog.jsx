@@ -55,26 +55,27 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
       />
       <div 
         className={cn(
-          "fixed left-1/2 top-1/2 z-50 grid w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg sm:rounded-lg transition-all duration-300",
+          "fixed left-1/2 top-1/2 z-50 grid w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-4 sm:p-6 shadow-lg sm:rounded-lg transition-all duration-300 mx-4 sm:mx-0",
           isMounted ? "opacity-100 scale-100" : "opacity-0 scale-95",
           isClosing && "opacity-0 scale-95"
         )}
         style={{
-          transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+          transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+          maxHeight: '90vh'
         }}
       >
         <div className="flex items-center justify-between">
-          {title && <h2 className="text-2xl font-semibold">{title}</h2>}
+          {title && <h2 className="text-lg sm:text-2xl font-semibold pr-2">{title}</h2>}
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6"
+            className="h-6 w-6 flex-shrink-0"
             onClick={() => onOpenChange(false)}
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
-        <div className="overflow-y-auto max-h-[70vh]">
+        <div className="overflow-y-auto max-h-[calc(90vh-80px)] sm:max-h-[70vh]">
           {children}
         </div>
       </div>

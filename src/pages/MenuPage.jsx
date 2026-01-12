@@ -7,12 +7,12 @@ function MenuPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-      <div className="text-center space-y-8 p-8 animate-fade-in">
+      <div className="text-center space-y-8 p-4 sm:p-8 animate-fade-in">
         <div className="space-y-4 animate-fade-in">
-          <h1 className="text-6xl font-bold text-foreground mb-2 animate-fade-in">
+          <h1 className="text-4xl sm:text-6xl font-bold text-foreground mb-2 animate-fade-in">
             İdea Atlası
           </h1>
-          <p className="text-xl text-muted-foreground max-w-md mx-auto animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-md mx-auto px-4 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             Filozofların dünyasını keşfedin
           </p>
         </div>

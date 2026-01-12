@@ -6,22 +6,23 @@
     <title>İdea Atlası - Felsefe Haritası</title>
     <script>
       // GitHub Pages SPA routing fix
-      // Redirect to index.html with the path as a query parameter
       const path = window.location.pathname;
       const basePath = '/ideatlasi/';
       
-      // Remove base path from the current path
-      let cleanPath = path;
+      // Get the path after the base path
+      let routePath = path;
       if (path.startsWith(basePath)) {
-        cleanPath = path.slice(basePath.length - 1);
+        routePath = path.slice(basePath.length);
+      } else if (path.startsWith('/')) {
+        routePath = path.slice(1);
       }
       
-      // Redirect to index.html with hash routing fallback
-      if (cleanPath !== '/' && cleanPath !== '/index.html') {
-        window.location.replace(basePath + 'index.html' + cleanPath);
-      } else {
-        window.location.replace(basePath + 'index.html');
-      }
+      // Remove leading/trailing slashes except for root
+      routePath = routePath.replace(/^\/+|\/+$/g, '');
+      
+      // Build redirect URL
+      const redirectUrl = basePath + 'index.html' + (routePath ? '/' + routePath : '');
+      window.location.replace(redirectUrl);
     </script>
   </head>
   <body>

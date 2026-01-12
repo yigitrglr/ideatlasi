@@ -158,15 +158,15 @@ function MapPage() {
     <div className="relative w-full h-screen">
       {/* Top Bar */}
       <div className="absolute top-0 left-0 right-0 z-[1000] bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3">
           <button
-            className="text-xl font-bold text-foreground cursor-pointer hover:opacity-80 transition-opacity"
+            className="text-lg sm:text-xl font-bold text-foreground cursor-pointer hover:opacity-80 transition-opacity truncate"
             onClick={() => navigate('/')}
             type="button"
           >
             İdea Atlası
           </button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button
               variant="ghost"
               size="icon"
@@ -319,16 +319,16 @@ function MapPage() {
       )}
 
       {/* Legend */}
-      <div className="absolute bottom-4 right-4 z-[1000] bg-background/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-lg animate-fade-in">
-        <h4 className="text-sm font-semibold mb-2">Dönemler</h4>
+      <div className="absolute bottom-4 right-4 left-4 sm:left-auto z-[1000] bg-background/95 backdrop-blur-sm border border-border rounded-lg p-3 sm:p-4 shadow-lg animate-fade-in max-w-xs sm:max-w-none">
+        <h4 className="text-xs sm:text-sm font-semibold mb-2">Dönemler</h4>
         <div className="space-y-1 text-xs">
           {Object.entries(periodColors).map(([period, color]) => (
             <div key={period} className="flex items-center gap-2">
               <div
-                className="w-4 h-4 rounded-full border-2 border-white"
+                className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-white flex-shrink-0"
                 style={{ backgroundColor: color }}
               />
-              <span>{period}</span>
+              <span className="truncate">{period}</span>
             </div>
           ))}
         </div>

@@ -23,8 +23,8 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
+        scope: process.env.GITHUB_PAGES ? '/ideatlasi/' : '/',
+        start_url: process.env.GITHUB_PAGES ? '/ideatlasi/' : '/',
         icons: [
           {
             src: 'pwa-192x192.png',
