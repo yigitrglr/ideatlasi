@@ -1,55 +1,40 @@
-import { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
 
-const Sheet = ({ open, onOpenChange, children, side = "right" }) => {
-  const [isClosing, setIsClosing] = useState(false)
-  const [shouldRender, setShouldRender] = useState(open)
-
-  useEffect(() => {
-    if (open) {
-      // Use double RAF to ensure layout is complete before animation
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setShouldRender(true)
-          setIsClosing(false)
-        })
-      })
-    } else if (shouldRender) {
-      setIsClosing(true)
-      const timer = setTimeout(() => {
-        setShouldRender(false)
-        setIsClosing(false)
-      }, 300)
-      return () => clearTimeout(timer)
-    }
-  }, [open, shouldRender])
-
-  if (!shouldRender) return null
-
+const Sheet = ({ open, onOpenChange, children, side = "right", title }) => {
   const sideClasses = {
-    right: "inset-y-0 right-0 border-l top-0",
-    left: "inset-y-0 left-0 border-r top-0",
+    right: "inset-y-0 right-0 top-0 border-l",
+    left: "inset-y-0 left-0 top-0 border-r",
     top: "inset-x-0 top-0 border-b",
     bottom: "inset-x-0 bottom-0 border-t",
   }
 
-  const animationClass = isClosing
-    ? (side === "left" ? "animate-slide-out-left" : "animate-slide-out-right")
-    : (side === "left" ? "animate-slide-in-left" : "animate-slide-in-right")
+  const translateClass =
+    side === "left"
+      ? open
+        ? "translate-x-0"
+        : "-translate-x-full pointer-events-none"
+      : side === "right"
+        ? open
+          ? "translate-x-0"
+          : "translate-x-full pointer-events-none"
+        : open
+          ? "translate-y-0"
+          : side === "top"
+            ? "-translate-y-full pointer-events-none"
+            : "translate-y-full pointer-events-none"
 
   return (
     <>
       <div 
         role="button"
         tabIndex={0}
-        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         style={{
-          opacity: isClosing ? 0 : 1,
-          transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          pointerEvents: isClosing ? 'none' : 'auto',
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? 'auto' : 'none',
           willChange: 'opacity'
         }}
         onClick={() => onOpenChange(false)}
@@ -61,14 +46,18 @@ const Sheet = ({ open, onOpenChange, children, side = "right" }) => {
         }}
         aria-label="Close menu"
       />
-      <div className={cn(
-        "fixed z-50 w-full sm:w-80 bg-background shadow-lg transition-all duration-500 ease-out",
-        sideClasses[side],
-        animationClass
-      )}>
+      <div 
+        className={cn(
+          "fixed z-50 w-full sm:w-80 bg-background shadow-lg transition-transform duration-300 ease-out",
+          sideClasses[side],
+          translateClass
+        )}
+      >
         <div className="flex h-full flex-col pt-16">
           <div className="flex items-center justify-between border-b p-4">
-            <h2 className="text-lg font-semibold">Menü</h2>
+            <h2 className="text-lg font-semibold truncate">
+              {title || "Menü"}
+            </h2>
             <Button
               variant="ghost"
               size="icon"
@@ -90,11 +79,13 @@ Sheet.propTypes = {
   open: PropTypes.bool.isRequired,
   onOpenChange: PropTypes.func.isRequired,
   children: PropTypes.node,
-  side: PropTypes.oneOf(["left", "right", "top", "bottom"])
+  side: PropTypes.oneOf(["left", "right", "top", "bottom"]),
+  title: PropTypes.string
 }
 
 Sheet.defaultProps = {
-  side: "right"
+  side: "right",
+  title: "Menü"
 }
 
 export { Sheet }

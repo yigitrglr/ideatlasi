@@ -112,8 +112,21 @@ function MapPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const navigate = useNavigate()
-  const { filteredPhilosophers, selectedPhilosopher, setSelectedPhilosopher, addToRecentlyViewed } = usePhilosophers()
+  const { philosophers, filteredPhilosophers, selectedPhilosopher, setSelectedPhilosopher, addToRecentlyViewed, addToSearchHistory, searchQuery } = usePhilosophers()
   const { theme, toggleTheme } = useTheme()
+
+  // URL'den filozof paylaşım linki ile aç
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get('philosopher')
+    if (!id || philosophers.length === 0) return
+
+    const found = philosophers.find(p => String(p.id) === String(id))
+    if (found) {
+      setSelectedPhilosopher(found)
+      addToRecentlyViewed(found)
+    }
+  }, [philosophers, setSelectedPhilosopher, addToRecentlyViewed])
 
   // Klavye kısayolları
   useEffect(() => {
@@ -182,7 +195,11 @@ function MapPage() {
   const handleMarkerClick = useCallback((philosopher) => {
     setSelectedPhilosopher(philosopher)
     addToRecentlyViewed(philosopher)
-  }, [setSelectedPhilosopher, addToRecentlyViewed])
+    // Eğer arama yapılmışsa, arama geçmişine ekle
+    if (searchQuery && searchQuery.trim() !== '') {
+      addToSearchHistory(searchQuery.trim())
+    }
+  }, [setSelectedPhilosopher, addToRecentlyViewed, searchQuery, addToSearchHistory])
 
   // Modal kapatma handler
   const handleCloseModal = useCallback((open) => {
@@ -238,11 +255,11 @@ function MapPage() {
       </div>
 
       {/* Menü Sheet */}
-      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen} title="Menü">
         <div className="space-y-2">
           <Button
             variant="ghost"
-            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-fade-in"
+            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-smooth-slide-in"
             style={{ animationDelay: '0.1s' }}
             onClick={() => {
               navigate('/')
@@ -253,7 +270,7 @@ function MapPage() {
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-fade-in"
+            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-smooth-slide-in"
             style={{ animationDelay: '0.15s' }}
             onClick={() => {
               navigate('/settings')
@@ -264,7 +281,7 @@ function MapPage() {
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-fade-in"
+            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-smooth-slide-in"
             style={{ animationDelay: '0.2s' }}
             onClick={() => {
               navigate('/about')
@@ -312,10 +329,10 @@ function MapPage() {
                 }
               }}
             >
-            <Popup className="animate-slide-up">
+            <Popup className="animate-smooth-slide-up">
               <div className="p-2 min-w-[200px]">
                 <PhilosopherPopupImage philosopher={philosopher} />
-                <h3 className="font-bold text-lg mb-1 animate-fade-in">{philosopher.name}</h3>
+                <h3 className="font-bold text-lg mb-1 animate-smooth-fade-in">{philosopher.name}</h3>
                 <p className="text-sm text-muted-foreground mb-2">{philosopher.birthCity}</p>
                 <p className="text-xs text-muted-foreground mb-2">
                   {Math.abs(philosopher.birthYear)} {philosopher.birthYear < 0 ? 'MÖ' : 'MS'} - 
@@ -345,39 +362,41 @@ function MapPage() {
         />
       )}
 
-      {/* Legend */}
-      <div className="absolute bottom-3 right-3 left-3 sm:left-auto z-[1000] bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg animate-fade-in">
-        {/* Mobile: compact pill style */}
-        <div className="sm:hidden p-2">
-          <h4 className="text-[10px] font-semibold mb-1.5 text-center">Dönemler</h4>
-          <div className="flex flex-wrap gap-1.5 text-[9px] leading-tight justify-center">
-            {Object.entries(periodColors).map(([period, color]) => (
-              <div key={period} className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-muted/70">
-                <div
-                  className="w-2 h-2 rounded-full border border-white/80 flex-shrink-0"
-                  style={{ backgroundColor: color }}
-                />
-                <span className="truncate max-w-[70px]">{period}</span>
-              </div>
-            ))}
+      {/* Legend - gizle when overlays open */}
+      {!selectedPhilosopher && !menuOpen && !searchOpen && (
+        <div className="absolute bottom-3 right-3 left-3 sm:left-auto z-[900] bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg animate-smooth-fade-in">
+          {/* Mobile: compact pill style */}
+          <div className="sm:hidden p-2">
+            <h4 className="text-[10px] font-semibold mb-1.5 text-center">Dönemler</h4>
+            <div className="flex flex-wrap gap-1.5 text-[9px] leading-tight justify-center">
+              {Object.entries(periodColors).map(([period, color]) => (
+                <div key={period} className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-muted/70">
+                  <div
+                    className="w-2 h-2 rounded-full border border-white/80 flex-shrink-0"
+                    style={{ backgroundColor: color }}
+                  />
+                  <span className="truncate max-w-[70px]">{period}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Desktop: clean vertical list */}
+          <div className="hidden sm:block p-3 min-w-[180px]">
+            <h4 className="text-sm font-semibold mb-2">Dönemler</h4>
+            <div className="space-y-1.5 text-xs">
+              {Object.entries(periodColors).map(([period, color]) => (
+                <div key={period} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full border-2 border-white flex-shrink-0 shadow-sm"
+                    style={{ backgroundColor: color }}
+                  />
+                  <span className="truncate">{period}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        {/* Desktop: clean vertical list */}
-        <div className="hidden sm:block p-3 min-w-[180px]">
-          <h4 className="text-sm font-semibold mb-2">Dönemler</h4>
-          <div className="space-y-1.5 text-xs">
-            {Object.entries(periodColors).map(([period, color]) => (
-              <div key={period} className="flex items-center gap-2">
-                <div
-                  className="w-3 h-3 rounded-full border-2 border-white flex-shrink-0 shadow-sm"
-                  style={{ backgroundColor: color }}
-                />
-                <span className="truncate">{period}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   )
 }

@@ -5,6 +5,14 @@ import { Button } from '@/components/ui/button'
 function SearchSuggestions({ searchQuery, onSelect }) {
   const { philosophers } = usePhilosophers()
 
+  const cities = useMemo(() => {
+    return [...new Set(philosophers.map(p => p.birthCity))].filter(Boolean)
+  }, [philosophers])
+
+  const schools = useMemo(() => {
+    return [...new Set(philosophers.map(p => p.school))].filter(Boolean)
+  }, [philosophers])
+
   const suggestions = useMemo(() => {
     if (!searchQuery || searchQuery.length < 2) return []
     
@@ -20,7 +28,6 @@ function SearchSuggestions({ searchQuery, onSelect }) {
     })
     
     // Şehir eşleşmeleri
-    const cities = [...new Set(philosophers.map(p => p.birthCity))]
     cities.forEach(city => {
       if (city.toLowerCase().includes(lowerQuery)) {
         matches.push({ type: 'şehir', value: city })
@@ -28,7 +35,6 @@ function SearchSuggestions({ searchQuery, onSelect }) {
     })
     
     // Okul eşleşmeleri
-    const schools = [...new Set(philosophers.map(p => p.school))]
     schools.forEach(school => {
       if (school.toLowerCase().includes(lowerQuery)) {
         matches.push({ type: 'okul', value: school })
@@ -36,18 +42,18 @@ function SearchSuggestions({ searchQuery, onSelect }) {
     })
     
     return matches.slice(0, 5) // En fazla 5 öneri
-  }, [searchQuery, philosophers])
+  }, [searchQuery, philosophers, cities, schools])
 
   if (suggestions.length === 0) return null
 
   return (
-      <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto animate-fade-in">
+      <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto animate-smooth-slide-in">
       {suggestions.map((suggestion, index) => (
         <Button
           key={`suggestion-${suggestion.type}-${index}-${suggestion.value}${suggestion.philosopher ? `-${suggestion.philosopher.id}` : ''}`}
           variant="ghost"
-          className="w-full justify-start text-left h-auto py-2 px-3 transition-all duration-200 hover:bg-accent/50 animate-fade-in"
-          style={{ animationDelay: `${index * 0.05}s` }}
+          className="w-full justify-start text-left h-auto py-2 px-3 transition-all duration-200 hover:bg-accent/50 animate-smooth-fade-in"
+          style={{ animationDelay: `${index * 0.03}s` }}
           onClick={() => {
             if (suggestion.philosopher) {
               onSelect(suggestion.philosopher)

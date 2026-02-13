@@ -52,16 +52,16 @@ function AboutPage() {
           Ana Menüye Dön
         </Button>
 
-        <h1 className="text-3xl font-bold animate-fade-in">Hakkımızda</h1>
+        <h1 className="text-3xl font-bold animate-smooth-fade-in">Hakkımızda</h1>
         
         <div className="space-y-6 text-foreground">
-          <p className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <p className="animate-smooth-fade-in" style={{ animationDelay: '0.1s' }}>
             İdea Atlası, filozofların hayatlarını, 
             eserlerini ve düşüncelerini interaktif bir harita üzerinden keşfetmenizi 
             sağlayan bir platformdur.
           </p>
           
-          <p className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <p className="animate-smooth-fade-in" style={{ animationDelay: '0.15s' }}>
             Bu proje, felsefe tarihini görselleştirerek öğrenmeyi kolaylaştırmayı 
             ve filozofların yaşadıkları coğrafyaları keşfetmenizi amaçlamaktadır.
           </p>
@@ -72,7 +72,7 @@ function AboutPage() {
             
             {/* Toplam Filozof Sayısı */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.02] animate-fade-in">
+              <div className="p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.02] animate-smooth-scale-in">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-primary/10 rounded-lg transition-transform duration-300 hover:rotate-12">
                     <Users className="h-6 w-6 text-primary" />
@@ -86,7 +86,7 @@ function AboutPage() {
             </div>
 
             {/* Dönem Dağılımı */}
-            <div className="p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <div className="p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg animate-smooth-fade-in" style={{ animationDelay: '0.1s' }}>
               <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="h-5 w-5 text-primary transition-transform duration-300 hover:scale-110" />
                 <h3 className="text-lg font-semibold">Dönem Dağılımı</h3>
@@ -95,7 +95,7 @@ function AboutPage() {
                 {stats.periods.map(([period, count], index) => {
                   const percentage = ((count / stats.total) * 100).toFixed(1)
                   return (
-                    <div key={period} className="space-y-1 animate-fade-in" style={{ animationDelay: `${0.15 + index * 0.05}s` }}>
+                    <div key={period} className="space-y-1 animate-smooth-fade-in" style={{ animationDelay: `${0.12 + index * 0.03}s` }}>
                       <div className="flex justify-between text-sm">
                         <span>{period}</span>
                         <span className="text-muted-foreground">{count} ({percentage}%)</span>
@@ -113,7 +113,7 @@ function AboutPage() {
             </div>
 
             {/* Okul/Akım İstatistikleri */}
-            <div className="p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg animate-smooth-fade-in" style={{ animationDelay: '0.15s' }}>
               <div className="flex items-center gap-2 mb-4">
                 <Book className="h-5 w-5 text-primary transition-transform duration-300 hover:rotate-12" />
                 <h3 className="text-lg font-semibold">En Popüler Okullar/Akımlar</h3>
@@ -122,8 +122,8 @@ function AboutPage() {
                 {stats.schools.map(([school, count], index) => (
                   <div 
                     key={school} 
-                    className="flex justify-between items-center p-2 bg-background rounded transition-all duration-200 hover:scale-105 hover:shadow-md animate-fade-in"
-                    style={{ animationDelay: `${0.25 + index * 0.05}s` }}
+                    className="flex justify-between items-center p-2 bg-background rounded transition-all duration-200 hover:scale-105 hover:shadow-md animate-smooth-scale-in"
+                    style={{ animationDelay: `${0.18 + index * 0.03}s` }}
                   >
                     <span className="text-sm">{school}</span>
                     <span className="text-sm font-semibold text-primary">{count}</span>
@@ -133,7 +133,7 @@ function AboutPage() {
             </div>
 
             {/* Coğrafi Dağılım */}
-            <div className="p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg animate-smooth-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="h-5 w-5 text-primary transition-transform duration-300 hover:scale-110" />
                 <h3 className="text-lg font-semibold">Coğrafi Dağılım</h3>
@@ -142,8 +142,8 @@ function AboutPage() {
                 {stats.cities.map(([city, count], index) => (
                   <div 
                     key={city} 
-                    className="flex justify-between items-center p-2 bg-background rounded transition-all duration-200 hover:scale-105 hover:shadow-md animate-fade-in"
-                    style={{ animationDelay: `${0.35 + index * 0.05}s` }}
+                    className="flex justify-between items-center p-2 bg-background rounded transition-all duration-200 hover:scale-105 hover:shadow-md animate-smooth-scale-in"
+                    style={{ animationDelay: `${0.23 + index * 0.03}s` }}
                   >
                     <span className="text-sm">{city}</span>
                     <span className="text-sm font-semibold text-primary">{count}</span>
@@ -154,14 +154,14 @@ function AboutPage() {
           </div>
 
           {/* Teknolojiler */}
-          <div className="mt-8 p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="mt-8 p-4 bg-muted rounded-lg transition-all duration-300 hover:shadow-lg animate-smooth-fade-in" style={{ animationDelay: '0.25s' }}>
             <h2 className="text-lg font-semibold mb-2">Teknolojiler</h2>
             <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
               {['React', 'Vite', 'shadcn/ui', 'Leaflet & OpenStreetMap', 'React Router'].map((tech, index) => (
                 <li 
                   key={tech} 
-                  className="transition-all duration-200 hover:translate-x-2 hover:text-foreground animate-fade-in"
-                  style={{ animationDelay: `${0.45 + index * 0.05}s` }}
+                  className="transition-all duration-200 hover:translate-x-2 hover:text-foreground animate-smooth-fade-in"
+                  style={{ animationDelay: `${0.28 + index * 0.03}s` }}
                 >
                   {tech}
                 </li>

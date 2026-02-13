@@ -295,63 +295,187 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
   will-change: opacity, transform;
 }
 
 .animate-fade-out {
-  animation: fadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeOut 0.2s ease-out;
   will-change: opacity;
 }
 
 .animate-slide-in-right {
-  animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-slide-out-right {
-  animation: slideOutRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-slide-in-left {
-  animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-slide-out-left {
-  animation: slideOutLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .animate-scale-out {
-  animation: scaleOut 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: scaleOut 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .animate-fade-out {
-  animation: fadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeOut 0.2s ease-out;
 }
 
 .animate-bounce-in {
-  animation: bounceIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .animate-slide-up {
-  animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes smoothFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes smoothSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes smoothScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes smoothSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gentleBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(8px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.02) translateY(-2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-smooth-fade-in {
+  animation: smoothFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+.animate-smooth-slide-in {
+  animation: smoothSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+.animate-smooth-scale-in {
+  animation: smoothScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+.animate-smooth-slide-up {
+  animation: smoothSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+.animate-gentle-bounce {
+  animation: gentleBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  will-change: opacity, transform;
 }
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Smooth transitions - sadece gerekli elementler için */
 button, a, input, select {
   transition-property: background-color, border-color, color, fill, stroke, opacity, transform, box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
+  transition-duration: 150ms;
 }
 
-/* Hover efektleri
+button:hover, a:hover {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 200ms;
+}
+
+@supports (-webkit-overflow-scrolling: touch) {
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+body.dialog-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 639px) {
+  .dialog-container[data-dragging="true"] {
+    transform: translateY(var(--drag-y, 0px)) !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 /* Marker popup animasyonu */
 .leaflet-popup-content-wrapper {
@@ -382,7 +506,6 @@ input[type="range"]:hover::-moz-range-thumb {
   transform: scale(1.2);
 }
 
-/* Scrollbar stilleri */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

@@ -1,7 +1,7 @@
 import { memo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { Calendar, MapPin, Book, Lightbulb, Users, Star } from 'lucide-react'
+import { Calendar, MapPin, Book, Lightbulb, Users, Star, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePhilosophers } from '@/context/PhilosopherContext'
 import { ImageSkeleton } from '@/components/Skeleton'
@@ -14,19 +14,42 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
   const favorite = isFavorite(philosopher.id)
 
+  const shareUrl = `${window.location.origin}/map?philosopher=${encodeURIComponent(philosopher.id)}`
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: philosopher.name,
+          text: `${philosopher.name} - İdea Atlası`,
+          url: shareUrl,
+        })
+        return
+      }
+    } catch {
+      // ignore share cancel/fail and fallback to clipboard
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+    } catch {
+      // ignore if clipboard not available
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange} title={philosopher.name}>
-      <DialogContent className="space-y-3 sm:space-y-6 text-sm sm:text-base">
+      <DialogContent className="space-y-3 sm:space-y-6 text-xs sm:text-base">
         {/* Fotoğraf ve Temel Bilgiler */}
-        <div className="flex flex-col md:flex-row gap-2 sm:gap-6 animate-fade-in">
+        <div className="flex flex-col md:flex-row gap-3 sm:gap-6 animate-smooth-fade-in">
           <div className="flex-shrink-0 mx-auto md:mx-0 relative">
             {imageLoading && (
-              <ImageSkeleton className="w-20 h-20 sm:w-44 sm:h-44 absolute inset-0" />
+              <ImageSkeleton className="w-28 h-28 sm:w-44 sm:h-44 absolute inset-0" />
             )}
             <img
               src={philosopher.photo}
               alt={philosopher.name}
-              className={`w-20 h-20 sm:w-44 sm:h-44 object-cover rounded-lg border transition-all duration-500 ease-out hover:scale-105 ${
+              className={`w-28 h-28 sm:w-44 sm:h-44 object-cover rounded-lg border transition-opacity duration-300 ease-out hover:scale-105 ${
                 imageLoading ? 'opacity-0' : 'opacity-100'
               }`}
               loading="lazy"
@@ -37,30 +60,43 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
               }}
             />
           </div>
-          <div className="flex-1 space-y-2 sm:space-y-4">
+          <div className="flex-1 space-y-2 sm:space-y-4 mt-1">
             <div className="flex items-start justify-between relative">
               <div className="flex-1 pr-8 sm:pr-10">
-                <h3 className="text-base sm:text-2xl font-bold leading-tight">{philosopher.name}</h3>
-                <p className="text-xs sm:text-base text-muted-foreground italic mt-0.5">{philosopher.nameEn}</p>
+                <h3 className="text-sm sm:text-2xl font-bold leading-tight">{philosopher.name}</h3>
+                <p className="text-[10px] sm:text-base text-muted-foreground italic mt-0.5">{philosopher.nameEn}</p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => toggleFavorite(philosopher)}
-                className="transition-all duration-500 ease-out hover:scale-110 active:scale-95 absolute top-0 right-0"
-                aria-label={favorite ? "Favorilerden çıkar" : "Favorilere ekle"}
-              >
-                <Star
-                  className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-500 ease-out ${
-                    favorite
-                      ? 'fill-yellow-400 text-yellow-400 animate-bounce-in'
-                      : 'text-muted-foreground hover:text-yellow-400 hover:scale-110'
-                  }`}
-                />
-              </Button>
+              <div className="absolute top-0 right-0 flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleShare}
+                  className="transition-all duration-200 ease-out hover:scale-110 active:scale-95"
+                  aria-label="Paylaş"
+                  title="Paylaş"
+                >
+                  <Share2 className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground hover:text-foreground transition-colors" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => toggleFavorite(philosopher)}
+                  className="transition-all duration-200 ease-out hover:scale-110 active:scale-95"
+                  aria-label={favorite ? "Favorilerden çıkar" : "Favorilere ekle"}
+                  title={favorite ? "Favorilerden çıkar" : "Favorilere ekle"}
+                >
+                  <Star
+                    className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-200 ease-out ${
+                      favorite
+                        ? 'fill-yellow-400 text-yellow-400 animate-bounce-in'
+                        : 'text-muted-foreground hover:text-yellow-400 hover:scale-110'
+                    }`}
+                  />
+                </Button>
+              </div>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-xs sm:text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-4 text-[10px] sm:text-sm">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <span>
@@ -85,14 +121,14 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
         </div>
 
         {/* Biyografi */}
-        <div>
-          <h4 className="text-sm sm:text-lg font-semibold mb-1.5 sm:mb-2">Biyografi</h4>
-          <p className="text-xs sm:text-base leading-relaxed text-foreground">{philosopher.biography}</p>
+        <div className="mt-4 sm:mt-6">
+          <h4 className="text-xs sm:text-lg font-semibold mb-2 sm:mb-3">Biyografi</h4>
+          <p className="text-[10px] sm:text-base leading-relaxed text-foreground">{philosopher.biography}</p>
         </div>
 
         {/* Eserler */}
         {philosopher.works && philosopher.works.length > 0 && (
-          <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="animate-smooth-fade-in" style={{ animationDelay: '0.1s' }}>
             <h4 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 flex items-center gap-2">
               <Book className="h-5 w-5 transition-transform duration-300 hover:rotate-12" />
               Önemli Eserler
@@ -101,7 +137,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
               {philosopher.works.map((work, index) => (
                 <div 
                   key={`work-${philosopher.id}-${index}-${work.title}`} 
-                  className="p-2 sm:p-3 bg-muted rounded-lg transition-all duration-500 ease-out hover:bg-muted/80 hover:shadow-md animate-fade-in"
+                  className="p-2 sm:p-3 bg-muted rounded-lg transition-all duration-200 ease-out hover:bg-muted/80 hover:shadow-md animate-smooth-scale-in"
                   style={{ animationDelay: `${0.15 + index * 0.05}s` }}
                 >
                   <p className="font-medium text-sm sm:text-base">{work.title}</p>
@@ -116,7 +152,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
         {/* Temel Fikirler */}
         {philosopher.keyIdeas && philosopher.keyIdeas.length > 0 && (
-          <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="animate-smooth-fade-in" style={{ animationDelay: '0.15s' }}>
             <h4 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 flex items-center gap-2">
               <Lightbulb className="h-5 w-5 transition-transform duration-300 hover:scale-110" />
               Temel Fikirler
@@ -125,7 +161,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
               {philosopher.keyIdeas.map((idea, index) => (
                 <span
                   key={`idea-${philosopher.id}-${index}-${idea}`}
-                  className="px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs sm:text-sm transition-all duration-500 ease-out hover:bg-primary/20 hover:scale-105 animate-fade-in"
+                  className="px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs sm:text-sm transition-all duration-200 ease-out hover:bg-primary/20 hover:scale-105 animate-smooth-scale-in"
                   style={{ animationDelay: `${0.25 + index * 0.05}s` }}
                 >
                   {idea}
@@ -137,7 +173,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
         {/* Etkileşimler */}
         {(philosopher.influences?.length > 0 || philosopher.influenced?.length > 0) && (
-          <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="animate-smooth-fade-in" style={{ animationDelay: '0.2s' }}>
             <h4 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 flex items-center gap-2">
               <Users className="h-5 w-5 transition-transform duration-300 hover:scale-110" />
               Felsefi Etkileşimler
@@ -150,7 +186,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
                     {philosopher.influences.map((name, index) => (
                       <span
                         key={`influence-${philosopher.id}-${index}-${name}`}
-                        className="px-2 py-1 bg-secondary rounded text-xs sm:text-sm transition-all duration-500 ease-out hover:bg-secondary/80 hover:scale-105 animate-fade-in"
+                        className="px-2 py-1 bg-secondary rounded text-xs sm:text-sm transition-all duration-200 ease-out hover:bg-secondary/80 hover:scale-105 animate-smooth-scale-in"
                         style={{ animationDelay: `${0.35 + index * 0.03}s` }}
                       >
                         {name}
@@ -166,7 +202,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
                     {philosopher.influenced.map((name, index) => (
                       <span
                         key={`influenced-${philosopher.id}-${index}-${name}`}
-                        className="px-2 py-1 bg-secondary rounded text-xs sm:text-sm transition-all duration-500 ease-out hover:bg-secondary/80 hover:scale-105 animate-fade-in"
+                        className="px-2 py-1 bg-secondary rounded text-xs sm:text-sm transition-all duration-200 ease-out hover:bg-secondary/80 hover:scale-105 animate-smooth-scale-in"
                         style={{ animationDelay: `${0.4 + index * 0.03}s` }}
                       >
                         {name}

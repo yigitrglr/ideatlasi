@@ -51,19 +51,21 @@ function SearchAndFilters({ open, onOpenChange }) {
   // Arama geçmişini temizle
   const clearSearchHistory = () => {
     localStorage.setItem('searchHistory', JSON.stringify([]))
-    window.location.reload() // Context'i güncellemek için
+    window.dispatchEvent(new Event('searchHistoryUpdated'))
   }
 
   const handleSuggestionSelect = (suggestion) => {
     if (suggestion.id) {
-      // Filozof seçildi
+      handleSearchSubmit(searchQuery)
       setSelectedPhilosopher(suggestion)
       setShowSuggestions(false)
     } else if (suggestion.type === 'city') {
+      handleSearchSubmit(searchQuery)
       setFilters({ ...filters, city: suggestion.value })
       setSearchQuery('')
       setShowSuggestions(false)
     } else if (suggestion.type === 'school') {
+      handleSearchSubmit(searchQuery)
       setFilters({ ...filters, school: suggestion.value })
       setSearchQuery('')
       setShowSuggestions(false)
@@ -179,7 +181,7 @@ function SearchAndFilters({ open, onOpenChange }) {
 
           {/* Favoriler */}
           {favorites && favorites.length > 0 && (
-            <div className="mb-4 animate-fade-in">
+            <div className="mb-4 animate-smooth-fade-in">
               <div className="flex items-center gap-2 mb-2">
                 <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 transition-transform duration-300 hover:rotate-12" />
                 <h4 className="text-sm font-medium">Favoriler</h4>
@@ -190,8 +192,8 @@ function SearchAndFilters({ open, onOpenChange }) {
                     key={philosopher.id}
                     variant="outline"
                     size="sm"
-                    className="text-xs transition-all duration-200 hover:scale-105 hover:shadow-md animate-fade-in"
-                    style={{ animationDelay: `${index * 0.05}s` }}
+                    className="text-xs transition-all duration-200 hover:scale-105 hover:shadow-md animate-smooth-scale-in"
+                    style={{ animationDelay: `${index * 0.03}s` }}
                     onClick={() => {
                       setSelectedPhilosopher(philosopher)
                       onOpenChange(false)
@@ -206,7 +208,7 @@ function SearchAndFilters({ open, onOpenChange }) {
 
           {/* Son Görüntülenenler */}
           {recentlyViewed && recentlyViewed.length > 0 && (
-            <div className="mb-4 animate-fade-in">
+            <div className="mb-4 animate-smooth-fade-in">
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="h-4 w-4 text-muted-foreground transition-transform duration-300 hover:rotate-12" />
                 <h4 className="text-sm font-medium">Son Görüntülenenler</h4>
@@ -217,8 +219,8 @@ function SearchAndFilters({ open, onOpenChange }) {
                     key={philosopher.id}
                     variant="outline"
                     size="sm"
-                    className="text-xs transition-all duration-200 hover:scale-105 hover:shadow-md animate-fade-in"
-                    style={{ animationDelay: `${index * 0.05}s` }}
+                    className="text-xs transition-all duration-200 hover:scale-105 hover:shadow-md animate-smooth-scale-in"
+                    style={{ animationDelay: `${index * 0.03}s` }}
                     onClick={() => {
                       setSelectedPhilosopher(philosopher)
                       onOpenChange(false)
@@ -232,7 +234,7 @@ function SearchAndFilters({ open, onOpenChange }) {
           )}
 
           {/* Sonuç Sayısı */}
-          <p className="text-sm text-muted-foreground mb-4 animate-fade-in">
+          <p className="text-sm text-muted-foreground mb-4 animate-smooth-fade-in">
             {filteredPhilosophers.length} filozof bulundu
           </p>
 

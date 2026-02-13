@@ -19,10 +19,10 @@ function SettingsPage() {
           Ana Menüye Dön
         </Button>
 
-        <h1 className="text-3xl font-bold animate-fade-in">Ayarlar</h1>
+        <h1 className="text-3xl font-bold animate-smooth-fade-in">Ayarlar</h1>
         
         <div className="space-y-4">
-          <div className="p-4 border rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.01] animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="p-4 border rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.01] animate-smooth-scale-in" style={{ animationDelay: '0.1s' }}>
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold mb-1">Tema</h2>
@@ -51,7 +51,7 @@ function SettingsPage() {
             </div>
           </div>
 
-          <div className="p-4 border rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.01] animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="p-4 border rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.01] animate-smooth-scale-in" style={{ animationDelay: '0.15s' }}>
             <h2 className="text-lg font-semibold mb-2">Dil</h2>
             <p className="text-sm text-muted-foreground">
               Dil ayarları yakında eklenecek
