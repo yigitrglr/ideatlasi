@@ -14,7 +14,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
   const favorite = isFavorite(philosopher.id)
 
-  const shareUrl = `${window.location.origin}/map?philosopher=${encodeURIComponent(philosopher.id)}`
+  const shareUrl = `${window.location.origin}/ideatlasi/map?philosopher=${encodeURIComponent(philosopher.id)}`
 
   const handleShare = async () => {
     try {
