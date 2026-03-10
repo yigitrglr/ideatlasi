@@ -36,6 +36,8 @@ function SearchAndFilters({ open, onOpenChange }) {
     filteredPhilosophers,
     searchHistory,
     addToSearchHistory,
+    setSelectedPhilosopher,
+    addToRecentlyViewed,
   } = usePhilosophers()
 
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -61,9 +63,12 @@ function SearchAndFilters({ open, onOpenChange }) {
   }
 
   const handleSuggestionSelect = (suggestion) => {
-    if (suggestion.id) {
+    if (suggestion && suggestion.id != null) {
       handleSearchSubmit(searchQuery)
+      setSelectedPhilosopher(suggestion)
+      addToRecentlyViewed(suggestion)
       setShowSuggestions(false)
+      onOpenChange(false)
     } else if (suggestion.type === 'city') {
       handleSearchSubmit(searchQuery)
       setFilters({ ...filters, city: suggestion.value })
