@@ -115,8 +115,8 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
       <div 
         className={cn(
           "fixed z-50 grid bg-background shadow-lg dialog-container",
-          // Mobile: smaller, bottom sheet style
-          "inset-x-0 bottom-0 max-h-[92vh] rounded-t-2xl border-t border-l border-r",
+          // Mobile: smaller, bottom sheet style (leave space so drag handle is always visible)
+          "inset-x-0 bottom-0 max-h-[88vh] rounded-t-2xl border-t border-l border-r",
           // Desktop: centered modal
           "sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:max-w-2xl sm:max-h-[90vh] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg sm:border sm:mx-0",
           !isDragging && isMounted && !isClosing && "opacity-100 translate-y-0 sm:scale-100",
@@ -138,7 +138,12 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
           className="sm:hidden flex justify-center pt-2 pb-1 touch-none cursor-grab active:cursor-grabbing"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', paddingBlock: '0.5rem' }}
+          style={{
+            touchAction: 'none',
+            WebkitUserSelect: 'none',
+            userSelect: 'none',
+            paddingBlock: '0.5rem',
+          }}
         >
           <div className="w-12 h-1 bg-muted-foreground/30 rounded-full pointer-events-none" />
         </div>
@@ -158,7 +163,13 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
         </div>
         
         {/* Content */}
-        <div className="overflow-y-auto overscroll-contain px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6" style={{ maxHeight: 'calc(92vh - 60px)' }}>
+        <div
+          className="overflow-y-auto overscroll-contain px-4 pt-4 pb-4 sm:px-6 sm:pt-8 sm:pb-6"
+          style={{
+            maxHeight: 'calc(88vh - 60px)',
+            paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 1rem)',
+          }}
+        >
           {!isMounted ? (
             <div className="space-y-4 py-4">
               <div className="skeleton h-32 w-full rounded-lg" />
