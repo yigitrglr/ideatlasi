@@ -219,6 +219,15 @@ function MapPage() {
             <Button
               variant="ghost"
               size="icon"
+              onClick={toggleSearch}
+              title="Ara ve Filtrele (Ctrl+K)"
+              className="hidden sm:inline-flex"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={toggleTheme}
               title="Tema Değiştir"
               className="transition-transform duration-500 ease-out hover:rotate-180"
@@ -282,7 +291,7 @@ function MapPage() {
       <MapContainer
         center={[39, 35]}
         zoom={6}
-        style={{ height: '100vh', width: '100%', zIndex: 0 }}
+        style={{ height: '100dvh', width: '100%', zIndex: 0 }}
         scrollWheelZoom
         key={theme}
       >
@@ -381,26 +390,22 @@ function MapPage() {
         </div>
       )}
 
-      <div className="absolute bottom-3 left-3 right-3 z-[950] sm:left-1/2 sm:-translate-x-1/2 sm:w-auto">
-        <div className="flex items-center justify-between gap-3 rounded-full bg-background/95 backdrop-blur-md border border-border shadow-lg px-3 py-2">
+      <div className="absolute bottom-3 left-3 right-3 z-[950] sm:left-1/2 sm:-translate-x-1/2 sm:w-auto sm:bottom-4 sm:right-auto">
+        <div
+          className="flex items-center justify-between gap-3 rounded-full bg-background/95 backdrop-blur-md border border-border shadow-lg px-3 py-2 sm:py-2.5 sm:px-4 sm:hidden"
+          style={{
+            paddingBottom: 'calc(env(safe-area-inset-bottom, 0) + 0.5rem)',
+          }}
+        >
           <Button
             type="button"
             size="sm"
             variant={searchOpen ? 'secondary' : 'ghost'}
-            className="flex-1 flex items-center justify-center gap-2 text-xs sm:text-sm h-9"
+            className="flex-1 flex items-center justify-center gap-2 text-xs h-9"
             onClick={toggleSearch}
           >
             <Search className="h-4 w-4" />
             <span>Ara & Filtrele</span>
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="ghost"
-            className="hidden sm:inline-flex items-center justify-center gap-2 text-xs sm:text-sm h-9"
-            onClick={() => navigate('/settings')}
-          >
-            Ayarlar
           </Button>
         </div>
       </div>

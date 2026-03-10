@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, X, History, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,6 +9,18 @@ import { Sheet } from '@/components/ui/sheet'
 import SearchSuggestions from '@/components/SearchSuggestions'
 
 function SearchAndFilters({ open, onOpenChange }) {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth <= 640 : true
+  )
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const media = window.matchMedia('(max-width: 640px)')
+    const handleChange = (e) => setIsMobile(e.matches)
+    setIsMobile(media.matches)
+    media.addEventListener('change', handleChange)
+    return () => media.removeEventListener('change', handleChange)
+  }, [])
   const {
     searchQuery,
     setSearchQuery,
@@ -72,7 +84,12 @@ function SearchAndFilters({ open, onOpenChange }) {
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} side="bottom" title="Ara & Filtrele">
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      side={isMobile ? 'bottom' : 'left'}
+      title="Ara & Filtrele"
+    >
       <div className="space-y-5 pt-2">
         <div className="space-y-1">
           <div className="flex items-center justify-between">
