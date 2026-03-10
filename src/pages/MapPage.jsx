@@ -154,13 +154,11 @@ function MapPage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  // Menü toggle handler
   const toggleMenu = useCallback(() => {
     setMenuOpen(prev => !prev)
     setSearchOpen(false)
   }, [])
 
-  // Arama toggle handler
   const toggleSearch = useCallback(() => {
     setSearchOpen(prev => !prev)
     setMenuOpen(false)
@@ -208,26 +206,16 @@ function MapPage() {
 
   return (
     <div className="relative w-full h-screen">
-      {/* Top Bar */}
       <div className="absolute top-0 left-0 right-0 z-[1000] bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
-        <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3">
+        <div className="flex items-center justify-between px-3 sm:px-4 py-2">
           <button
-            className="text-lg sm:text-xl font-bold text-foreground cursor-pointer hover:opacity-80 transition-opacity truncate"
-            onClick={() => navigate('/')}
             type="button"
+            className="text-base sm:text-lg font-semibold text-foreground cursor-pointer hover:opacity-80 transition-opacity truncate"
+            onClick={() => navigate('/')}
           >
             İdea Atlası
           </button>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleSearch}
-              title="Ara ve Filtrele (Ctrl+K)"
-              className={`transition-all duration-500 ease-out hover:scale-110 ${searchOpen ? 'bg-accent' : ''}`}
-            >
-              <Search className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
-            </Button>
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <Button
               variant="ghost"
               size="icon"
@@ -236,9 +224,9 @@ function MapPage() {
               className="transition-transform duration-500 ease-out hover:rotate-180"
             >
               {theme === 'dark' ? (
-                <Sun className="h-5 w-5 transition-transform duration-300" />
+                <Sun className="h-5 w-5" />
               ) : (
-                <Moon className="h-5 w-5 transition-transform duration-300" />
+                <Moon className="h-5 w-5" />
               )}
             </Button>
             <Button
@@ -246,21 +234,19 @@ function MapPage() {
               size="icon"
               onClick={toggleMenu}
               title="Menü (Ctrl+M)"
-              className={`transition-all duration-500 ease-out hover:scale-110 ${menuOpen ? 'bg-accent' : ''}`}
+              className={`transition-all duration-300 ease-out hover:scale-110 ${menuOpen ? 'bg-accent' : ''}`}
             >
-              <Menu className="h-5 w-5 transition-transform duration-300 group-hover:rotate-90" />
+              <Menu className="h-5 w-5" />
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Menü Sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen} title="Menü">
         <div className="space-y-2">
           <Button
             variant="ghost"
-            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-smooth-slide-in"
-            style={{ animationDelay: '0.1s' }}
+            className="w-full justify-start text-sm h-10"
             onClick={() => {
               navigate('/')
               setMenuOpen(false)
@@ -270,8 +256,7 @@ function MapPage() {
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-smooth-slide-in"
-            style={{ animationDelay: '0.15s' }}
+            className="w-full justify-start text-sm h-10"
             onClick={() => {
               navigate('/settings')
               setMenuOpen(false)
@@ -281,8 +266,7 @@ function MapPage() {
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start transition-all duration-200 hover:translate-x-2 hover:bg-accent animate-smooth-slide-in"
-            style={{ animationDelay: '0.2s' }}
+            className="w-full justify-start text-sm h-10"
             onClick={() => {
               navigate('/about')
               setMenuOpen(false)
@@ -293,29 +277,25 @@ function MapPage() {
         </div>
       </Sheet>
 
-      {/* Arama ve Filtreler */}
       <SearchAndFilters open={searchOpen} onOpenChange={setSearchOpen} />
 
-      {/* Harita */}
       <MapContainer
         center={[39, 35]}
         zoom={6}
         style={{ height: '100vh', width: '100%', zIndex: 0 }}
-        scrollWheelZoom={true}
-        key={theme} // Tema değiştiğinde haritayı yeniden render et
+        scrollWheelZoom
+        key={theme}
       >
         <TileLayer
-          attribution={theme === 'dark' 
-            ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution={
+            theme === 'dark'
+              ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+              : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           }
           url={tileUrl}
         />
-        
-        <MarkerClusterGroup
-          chunkedLoading
-          maxClusterRadius={50}
-        >
+
+        <MarkerClusterGroup chunkedLoading maxClusterRadius={50}>
           {filteredPhilosophers.map((philosopher) => (
             <Marker
               key={philosopher.id}
@@ -326,34 +306,37 @@ function MapPage() {
                 click: (e) => {
                   e.originalEvent.stopPropagation()
                   handleMarkerClick(philosopher)
-                }
+                },
               }}
             >
-            <Popup className="animate-smooth-slide-up">
-              <div className="p-2 min-w-[200px]">
-                <PhilosopherPopupImage philosopher={philosopher} />
-                <h3 className="font-bold text-lg mb-1 animate-smooth-fade-in">{philosopher.name}</h3>
-                <p className="text-sm text-muted-foreground mb-2">{philosopher.birthCity}</p>
-                <p className="text-xs text-muted-foreground mb-2">
-                  {Math.abs(philosopher.birthYear)} {philosopher.birthYear < 0 ? 'MÖ' : 'MS'} - 
-                  {' '}{Math.abs(philosopher.deathYear)} {philosopher.deathYear < 0 ? 'MÖ' : 'MS'}
-                </p>
-                <p className="text-sm mb-2">{philosopher.school}</p>
-                <Button
-                  size="sm"
-                  className="w-full mt-2 transition-all duration-500 ease-out hover:scale-105"
-                  onClick={() => handleMarkerClick(philosopher)}
-                >
-                  Detayları Gör
-                </Button>
-              </div>
-            </Popup>
+              <Popup className="animate-smooth-slide-up">
+                <div className="p-2 min-w-[200px]">
+                  <PhilosopherPopupImage philosopher={philosopher} />
+                  <h3 className="font-bold text-lg mb-1 animate-smooth-fade-in">
+                    {philosopher.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-2">{philosopher.birthCity}</p>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    {Math.abs(philosopher.birthYear)}{' '}
+                    {philosopher.birthYear < 0 ? 'MÖ' : 'MS'} -{' '}
+                    {Math.abs(philosopher.deathYear)}{' '}
+                    {philosopher.deathYear < 0 ? 'MÖ' : 'MS'}
+                  </p>
+                  <p className="text-sm mb-2">{philosopher.school}</p>
+                  <Button
+                    size="sm"
+                    className="w-full mt-2 transition-all duration-300 ease-out hover:scale-105"
+                    onClick={() => handleMarkerClick(philosopher)}
+                  >
+                    Detayları Gör
+                  </Button>
+                </div>
+              </Popup>
             </Marker>
           ))}
         </MarkerClusterGroup>
       </MapContainer>
 
-      {/* Filozof Detay Modal */}
       {selectedPhilosopher && (
         <PhilosopherDetail
           philosopher={selectedPhilosopher}
@@ -362,15 +345,16 @@ function MapPage() {
         />
       )}
 
-      {/* Legend - gizle when overlays open */}
       {!selectedPhilosopher && !menuOpen && !searchOpen && (
-        <div className="absolute bottom-3 right-3 left-3 sm:left-auto z-[900] bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg animate-smooth-fade-in">
-          {/* Mobile: compact pill style */}
+        <div className="absolute bottom-20 left-3 right-3 sm:left-auto sm:right-3 sm:bottom-4 z-[900] bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg animate-smooth-fade-in">
           <div className="sm:hidden p-2">
             <h4 className="text-[10px] font-semibold mb-1.5 text-center">Dönemler</h4>
             <div className="flex flex-wrap gap-1.5 text-[9px] leading-tight justify-center">
               {Object.entries(periodColors).map(([period, color]) => (
-                <div key={period} className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-muted/70">
+                <div
+                  key={period}
+                  className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-muted/70"
+                >
                   <div
                     className="w-2 h-2 rounded-full border border-white/80 flex-shrink-0"
                     style={{ backgroundColor: color }}
@@ -380,7 +364,6 @@ function MapPage() {
               ))}
             </div>
           </div>
-          {/* Desktop: clean vertical list */}
           <div className="hidden sm:block p-3 min-w-[180px]">
             <h4 className="text-sm font-semibold mb-2">Dönemler</h4>
             <div className="space-y-1.5 text-xs">
@@ -397,6 +380,30 @@ function MapPage() {
           </div>
         </div>
       )}
+
+      <div className="absolute bottom-3 left-3 right-3 z-[950] sm:left-1/2 sm:-translate-x-1/2 sm:w-auto">
+        <div className="flex items-center justify-between gap-3 rounded-full bg-background/95 backdrop-blur-md border border-border shadow-lg px-3 py-2">
+          <Button
+            type="button"
+            size="sm"
+            variant={searchOpen ? 'secondary' : 'ghost'}
+            className="flex-1 flex items-center justify-center gap-2 text-xs sm:text-sm h-9"
+            onClick={toggleSearch}
+          >
+            <Search className="h-4 w-4" />
+            <span>Ara & Filtrele</span>
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            className="hidden sm:inline-flex items-center justify-center gap-2 text-xs sm:text-sm h-9"
+            onClick={() => navigate('/settings')}
+          >
+            Ayarlar
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }
