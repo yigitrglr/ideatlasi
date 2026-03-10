@@ -221,7 +221,7 @@ function MapPage() {
               size="icon"
               onClick={toggleSearch}
               title="Ara ve Filtrele (Ctrl+K)"
-              className="hidden sm:inline-flex"
+              className={searchOpen ? 'bg-accent/60' : ''}
             >
               <Search className="h-5 w-5" />
             </Button>
