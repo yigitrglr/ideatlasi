@@ -15,9 +15,12 @@ function AboutPage() {
     const cities = {}
     
     philosophers.forEach(p => {
-      periods[p.period] = (periods[p.period] || 0) + 1
-      schools[p.school] = (schools[p.school] || 0) + 1
-      cities[p.birthCity] = (cities[p.birthCity] || 0) + 1
+      const period = p.period || 'Bilinmiyor'
+      const school = p.school || 'Bilinmiyor'
+      const city = p.birthCity || 'Bilinmiyor'
+      periods[period] = (periods[period] || 0) + 1
+      schools[school] = (schools[school] || 0) + 1
+      cities[city] = (cities[city] || 0) + 1
     })
 
     const topPeriods = Object.entries(periods)

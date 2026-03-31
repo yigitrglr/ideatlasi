@@ -1,33 +1,41 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import PropTypes from 'prop-types'
 
 const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    // LocalStorage'dan tema tercihini oku
-    const savedTheme = localStorage.getItem('theme')
-    if (savedTheme) return savedTheme
-    
-    // Sistem tercihini kontrol et
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
+    try {
+      const savedTheme = globalThis?.localStorage?.getItem('theme')
+      if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme
+    } catch {
+      // ignore storage errors
     }
-    return 'light'
+
+    const prefersDark = globalThis?.matchMedia?.('(prefers-color-scheme: dark)')?.matches
+    return prefersDark ? 'dark' : 'light'
   })
 
   useEffect(() => {
-    const root = window.document.documentElement
+    const root = globalThis?.document?.documentElement
+    if (!root) return
     root.classList.remove('light', 'dark')
     root.classList.add(theme)
-    localStorage.setItem('theme', theme)
+    try {
+      globalThis?.localStorage?.setItem('theme', theme)
+    } catch {
+      // ignore storage errors
+    }
   }, [theme])
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
   }
 
+  const value = useMemo(() => ({ theme, setTheme, toggleTheme }), [theme])
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   )
@@ -39,5 +47,9 @@ export function useTheme() {
     throw new Error('useTheme must be used within ThemeProvider')
   }
   return context
+}
+
+ThemeProvider.propTypes = {
+  children: PropTypes.node,
 }
 

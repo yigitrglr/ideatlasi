@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { Search, X, History, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,18 +10,19 @@ import { Sheet } from '@/components/ui/sheet'
 import SearchSuggestions from '@/components/SearchSuggestions'
 
 function SearchAndFilters({ open, onOpenChange }) {
+  const canUseWindow = !!globalThis?.window
   const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth <= 640 : true
+    canUseWindow ? globalThis.window.innerWidth <= 640 : true
   )
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const media = window.matchMedia('(max-width: 640px)')
+    if (!canUseWindow) return
+    const media = globalThis.window.matchMedia('(max-width: 640px)')
     const handleChange = (e) => setIsMobile(e.matches)
     setIsMobile(media.matches)
     media.addEventListener('change', handleChange)
     return () => media.removeEventListener('change', handleChange)
-  }, [])
+  }, [canUseWindow])
   const {
     searchQuery,
     setSearchQuery,
@@ -42,6 +44,18 @@ function SearchAndFilters({ open, onOpenChange }) {
 
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery)
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery), 130)
+    return () => clearTimeout(t)
+  }, [searchQuery])
+
+  const controlIds = useMemo(() => ({
+    period: 'filter-period',
+    school: 'filter-school',
+    city: 'filter-city',
+  }), [])
 
   const handleSearchSubmit = (query) => {
     if (query && query.trim() !== '') {
@@ -58,12 +72,16 @@ function SearchAndFilters({ open, onOpenChange }) {
   }
 
   const clearSearchHistory = () => {
-    localStorage.setItem('searchHistory', JSON.stringify([]))
-    window.dispatchEvent(new Event('searchHistoryUpdated'))
+    try {
+      globalThis?.localStorage?.setItem('searchHistory', JSON.stringify([]))
+    } catch {
+      // ignore storage errors
+    }
+    globalThis.dispatchEvent(new Event('searchHistoryUpdated'))
   }
 
   const handleSuggestionSelect = (suggestion) => {
-    if (suggestion && suggestion.id != null) {
+    if (suggestion?.id != null) {
       handleSearchSubmit(searchQuery)
       setSelectedPhilosopher(suggestion)
       addToRecentlyViewed(suggestion)
@@ -74,7 +92,7 @@ function SearchAndFilters({ open, onOpenChange }) {
       setFilters({ ...filters, city: suggestion.value })
       setSearchQuery('')
       setShowSuggestions(false)
-    } else if (suggestion.type === 'school') {
+    } else if (suggestion?.type === 'school') {
       handleSearchSubmit(searchQuery)
       setFilters({ ...filters, school: suggestion.value })
       setSearchQuery('')
@@ -151,7 +169,7 @@ function SearchAndFilters({ open, onOpenChange }) {
             />
 
             {showSuggestions && searchQuery && (
-              <SearchSuggestions searchQuery={searchQuery} onSelect={handleSuggestionSelect} />
+              <SearchSuggestions searchQuery={debouncedQuery} onSelect={handleSuggestionSelect} />
             )}
 
             {showHistory && searchQuery === '' && searchHistory.length > 0 && (
@@ -202,8 +220,9 @@ function SearchAndFilters({ open, onOpenChange }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-medium block">Dönem</label>
+              <label className="text-xs font-medium block" htmlFor={controlIds.period}>Dönem</label>
               <Select
+                id={controlIds.period}
                 value={filters.period}
                 onChange={(e) => setFilters({ ...filters, period: e.target.value })}
               >
@@ -217,8 +236,9 @@ function SearchAndFilters({ open, onOpenChange }) {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-medium block">Okul/Akım</label>
+              <label className="text-xs font-medium block" htmlFor={controlIds.school}>Okul/Akım</label>
               <Select
+                id={controlIds.school}
                 value={filters.school}
                 onChange={(e) => setFilters({ ...filters, school: e.target.value })}
               >
@@ -232,8 +252,9 @@ function SearchAndFilters({ open, onOpenChange }) {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-medium block">Şehir</label>
+              <label className="text-xs font-medium block" htmlFor={controlIds.city}>Şehir</label>
               <Select
+                id={controlIds.city}
                 value={filters.city}
                 onChange={(e) => setFilters({ ...filters, city: e.target.value })}
               >
@@ -300,6 +321,11 @@ function SearchAndFilters({ open, onOpenChange }) {
       </div>
     </Sheet>
   )
+}
+
+SearchAndFilters.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onOpenChange: PropTypes.func.isRequired,
 }
 
 export default SearchAndFilters

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { memo, useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { Menu, Search, Moon, Sun } from 'lucide-react'
@@ -71,6 +71,65 @@ PhilosopherPopupImage.propTypes = {
   }).isRequired,
 }
 
+const MarkerItem = memo(function MarkerItem({ philosopher, icon, onMarkerClick }) {
+  const eventHandlers = useMemo(() => ({
+    click: (e) => {
+      e.originalEvent.stopPropagation()
+      onMarkerClick(philosopher)
+    },
+  }), [onMarkerClick, philosopher])
+
+  return (
+    <Marker
+      position={[philosopher.lat, philosopher.lng]}
+      icon={icon}
+      zIndexOffset={1000}
+      eventHandlers={eventHandlers}
+    >
+      <Popup className="animate-smooth-slide-up">
+        <div className="p-2 min-w-[200px]">
+          <PhilosopherPopupImage philosopher={philosopher} />
+          <h3 className="font-bold text-lg mb-1 animate-smooth-fade-in">
+            {philosopher.name}
+          </h3>
+          <p className="text-sm text-muted-foreground mb-2">{philosopher.birthCity}</p>
+          <p className="text-xs text-muted-foreground mb-2">
+            {Math.abs(philosopher.birthYear)}{' '}
+            {philosopher.birthYear < 0 ? 'MÖ' : 'MS'} -{' '}
+            {Math.abs(philosopher.deathYear)}{' '}
+            {philosopher.deathYear < 0 ? 'MÖ' : 'MS'}
+          </p>
+          <p className="text-sm mb-2">{philosopher.school}</p>
+          <Button
+            size="sm"
+            className="w-full mt-2 transition-all duration-300 ease-out hover:scale-105"
+            onClick={() => onMarkerClick(philosopher)}
+          >
+            Detayları Gör
+          </Button>
+        </div>
+      </Popup>
+    </Marker>
+  )
+})
+
+MarkerItem.propTypes = {
+  philosopher: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    photo: PropTypes.string,
+    birthCity: PropTypes.string,
+    school: PropTypes.string,
+    period: PropTypes.string,
+    birthYear: PropTypes.number,
+    deathYear: PropTypes.number,
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+  }).isRequired,
+  icon: PropTypes.any,
+  onMarkerClick: PropTypes.func.isRequired,
+}
+
 // Özel marker icon oluştur
 function createCustomIcon(color, name, index = 0) {
   // Aynı konumdaki marker'lar için offset ekle
@@ -114,10 +173,11 @@ function MapPage() {
   const navigate = useNavigate()
   const { philosophers, filteredPhilosophers, selectedPhilosopher, setSelectedPhilosopher, addToRecentlyViewed, addToSearchHistory, searchQuery } = usePhilosophers()
   const { theme, toggleTheme } = useTheme()
+  const iconCacheRef = useRef(new Map())
 
   // URL'den filozof paylaşım linki ile aç
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
+    const params = new URLSearchParams(globalThis.location?.search ?? '')
     const id = params.get('philosopher')
     if (!id || philosophers.length === 0) return
 
@@ -150,8 +210,8 @@ function MapPage() {
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    globalThis.addEventListener('keydown', handleKeyDown)
+    return () => globalThis.removeEventListener('keydown', handleKeyDown)
   }, [])
 
   const toggleMenu = useCallback(() => {
@@ -175,7 +235,16 @@ function MapPage() {
       positionMap.set(positionKey, index + 1)
       
       const color = periodColors[philosopher.period] || '#6b7280'
-      icons[philosopher.id] = createCustomIcon(color, philosopher.name, index)
+      const initial = String(philosopher.name ?? '').charAt(0) || '?'
+      const cacheKey = `${color}|${initial}|${index}`
+      const cached = iconCacheRef.current.get(cacheKey)
+      if (cached) {
+        icons[philosopher.id] = cached
+      } else {
+        const created = createCustomIcon(color, philosopher.name, index)
+        iconCacheRef.current.set(cacheKey, created)
+        icons[philosopher.id] = created
+      }
     })
     return icons
   }, [filteredPhilosophers])
@@ -293,7 +362,6 @@ function MapPage() {
         zoom={6}
         style={{ height: '100dvh', width: '100%', zIndex: 0 }}
         scrollWheelZoom
-        key={theme}
       >
         <TileLayer
           attribution={
@@ -306,42 +374,12 @@ function MapPage() {
 
         <MarkerClusterGroup chunkedLoading maxClusterRadius={50}>
           {filteredPhilosophers.map((philosopher) => (
-            <Marker
+            <MarkerItem
               key={philosopher.id}
-              position={[philosopher.lat, philosopher.lng]}
               icon={markerIcons[philosopher.id]}
-              zIndexOffset={1000}
-              eventHandlers={{
-                click: (e) => {
-                  e.originalEvent.stopPropagation()
-                  handleMarkerClick(philosopher)
-                },
-              }}
-            >
-              <Popup className="animate-smooth-slide-up">
-                <div className="p-2 min-w-[200px]">
-                  <PhilosopherPopupImage philosopher={philosopher} />
-                  <h3 className="font-bold text-lg mb-1 animate-smooth-fade-in">
-                    {philosopher.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-2">{philosopher.birthCity}</p>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    {Math.abs(philosopher.birthYear)}{' '}
-                    {philosopher.birthYear < 0 ? 'MÖ' : 'MS'} -{' '}
-                    {Math.abs(philosopher.deathYear)}{' '}
-                    {philosopher.deathYear < 0 ? 'MÖ' : 'MS'}
-                  </p>
-                  <p className="text-sm mb-2">{philosopher.school}</p>
-                  <Button
-                    size="sm"
-                    className="w-full mt-2 transition-all duration-300 ease-out hover:scale-105"
-                    onClick={() => handleMarkerClick(philosopher)}
-                  >
-                    Detayları Gör
-                  </Button>
-                </div>
-              </Popup>
-            </Marker>
+              philosopher={philosopher}
+              onMarkerClick={handleMarkerClick}
+            />
           ))}
         </MarkerClusterGroup>
       </MapContainer>

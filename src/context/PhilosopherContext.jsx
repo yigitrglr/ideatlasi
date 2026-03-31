@@ -210,6 +210,29 @@ export function PhilosopherProvider({ children }) {
     return 0.5 // Kısmi eşleşme
   }, [])
 
+  const searchIndexById = useMemo(() => {
+    const m = new Map()
+    for (const p of philosophers) {
+      const works = Array.isArray(p.works) ? p.works : []
+      const keyIdeas = Array.isArray(p.keyIdeas) ? p.keyIdeas : []
+      const parts = [
+        p.name,
+        p.nameEn,
+        p.birthCity,
+        p.school,
+        p.period,
+        p.biography,
+        ...works.flatMap(w => [w?.title, w?.description]),
+        ...keyIdeas,
+      ]
+        .map(v => String(v ?? '').toLowerCase())
+        .filter(Boolean)
+
+      m.set(p.id, parts.join(' • '))
+    }
+    return m
+  }, [philosophers])
+
   // Filtrelenmiş filozoflar - memoize edilmiş (gelişmiş arama ile)
   const filteredPhilosophers = useMemo(() => {
     const q = deferredSearchQuery
@@ -222,38 +245,14 @@ export function PhilosopherProvider({ children }) {
       if (q !== '') {
         const name = String(philosopher.name ?? '')
         const nameEn = String(philosopher.nameEn ?? '')
-        const birthCity = String(philosopher.birthCity ?? '')
-        const school = String(philosopher.school ?? '')
-        const biography = String(philosopher.biography ?? '')
 
-        // İsim araması
-        const nameMatch = name.toLowerCase().includes(lowerSearchQuery) ||
-          nameEn.toLowerCase().includes(lowerSearchQuery)
-        
-        // Şehir ve okul araması
-        const locationMatch = birthCity.toLowerCase().includes(lowerSearchQuery) ||
-          school.toLowerCase().includes(lowerSearchQuery)
-        
-        // Eserler araması
-        const worksMatch = philosopher.works?.some(work =>
-          String(work.title ?? '').toLowerCase().includes(lowerSearchQuery) ||
-          String(work.description ?? '').toLowerCase().includes(lowerSearchQuery)
-        ) || false
-        
-        // Fikirler araması
-        const ideasMatch = philosopher.keyIdeas?.some(idea =>
-          String(idea ?? '').toLowerCase().includes(lowerSearchQuery)
-        ) || false
-        
-        // Biyografi araması
-        const bioMatch = biography.toLowerCase().includes(lowerSearchQuery) || false
+        const indexedMatch = (searchIndexById.get(philosopher.id) ?? '').includes(lowerSearchQuery)
         
         // Fuzzy search (eğer tam eşleşme yoksa)
-        const fuzzyNameMatch = !nameMatch && fuzzyMatch(name, q) > 0
-        const fuzzyNameEnMatch = !nameMatch && fuzzyMatch(nameEn, q) > 0
+        const fuzzyNameMatch = !indexedMatch && fuzzyMatch(name, q) > 0
+        const fuzzyNameEnMatch = !indexedMatch && fuzzyMatch(nameEn, q) > 0
         
-        matchesSearch = nameMatch || locationMatch || worksMatch || ideasMatch || bioMatch || 
-          fuzzyNameMatch || fuzzyNameEnMatch
+        matchesSearch = indexedMatch || fuzzyNameMatch || fuzzyNameEnMatch
       }
 
       // Dönem filtresi
@@ -271,7 +270,7 @@ export function PhilosopherProvider({ children }) {
 
       return matchesSearch && matchesPeriod && matchesSchool && matchesCity && matchesTimeRange
     })
-  }, [philosophers, deferredSearchQuery, filters, timeRange, fuzzyMatch])
+  }, [philosophers, deferredSearchQuery, filters, timeRange, fuzzyMatch, searchIndexById])
 
   const value = useMemo(() => ({
     philosophers,
