@@ -49,9 +49,9 @@ function AboutPage() {
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
-          className="mb-4 transition-all duration-200 hover:translate-x-[-4px] hover:scale-105"
+          className="mb-4 transform-gpu hover:-translate-x-1 hover:scale-[1.02] active:scale-[0.99]"
         >
-          <ArrowLeft className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+          <ArrowLeft className="mr-2 h-4 w-4 transition-transform duration-300 ease-out group-hover:-translate-x-1" />
           Ana Menüye Dön
         </Button>
 

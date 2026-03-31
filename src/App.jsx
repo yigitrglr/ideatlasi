@@ -12,7 +12,7 @@ const MapPage = lazy(() => import('./pages/MapPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
 
-import { PhilosopherCardSkeleton } from './components/Skeleton'
+import { AboutPageSkeleton, PhilosopherCardSkeleton, SettingsPageSkeleton } from './components/Skeleton'
 
 // Loading component
 function LoadingFallback() {
@@ -47,7 +47,7 @@ function App() {
             <Route 
               path="/settings" 
               element={
-                <Suspense fallback={<LoadingFallback />}>
+                <Suspense fallback={<SettingsPageSkeleton />}>
                   <SettingsPage />
                 </Suspense>
               } 
@@ -55,7 +55,7 @@ function App() {
             <Route 
               path="/about" 
               element={
-                <Suspense fallback={<LoadingFallback />}>
+                <Suspense fallback={<AboutPageSkeleton />}>
                   <AboutPage />
                 </Suspense>
               } 

@@ -13,9 +13,9 @@ function SettingsPage() {
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
-          className="mb-4 transition-all duration-200 hover:translate-x-[-4px] hover:scale-105"
+          className="mb-4 transform-gpu hover:-translate-x-1 hover:scale-[1.02] active:scale-[0.99]"
         >
-          <ArrowLeft className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+          <ArrowLeft className="mr-2 h-4 w-4 transition-transform duration-300 ease-out group-hover:-translate-x-1" />
           Ana Menüye Dön
         </Button>
 
@@ -34,16 +34,16 @@ function SettingsPage() {
                 variant="outline"
                 size="lg"
                 onClick={toggleTheme}
-                className="flex items-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-md"
+                className="flex items-center gap-2 transform-gpu hover:scale-105 hover:shadow-md active:scale-[0.99]"
               >
                 {theme === 'dark' ? (
                   <>
-                    <Sun className="h-5 w-5 transition-transform duration-300 group-hover:rotate-180" />
+                    <Sun className="h-5 w-5 transition-transform duration-500 ease-out group-hover:rotate-180" />
                     <span>Açık Tema</span>
                   </>
                 ) : (
                   <>
-                    <Moon className="h-5 w-5 transition-transform duration-300 group-hover:rotate-180" />
+                    <Moon className="h-5 w-5 transition-transform duration-500 ease-out group-hover:rotate-180" />
                     <span>Koyu Tema</span>
                   </>
                 )}
