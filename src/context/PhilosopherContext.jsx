@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useMemo, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useMemo, useEffect, useCallback, useDeferredValue } from 'react'
+import PropTypes from 'prop-types'
 import philosophersData from '@/data/philosophers.json'
 
 const PhilosopherContext = createContext()
@@ -7,6 +8,7 @@ export function PhilosopherProvider({ children }) {
   const [philosophers] = useState(philosophersData)
   const [selectedPhilosopher, setSelectedPhilosopher] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const deferredSearchQuery = useDeferredValue(searchQuery)
   const [filters, setFilters] = useState({
     period: 'all',
     school: 'all',
@@ -40,19 +42,19 @@ export function PhilosopherProvider({ children }) {
 
   // Benzersiz dönemler - memoize edilmiş
   const periods = useMemo(() => 
-    [...new Set(philosophers.map(p => p.period))].sort(),
+    [...new Set(philosophers.map(p => p.period))].sort((a, b) => String(a).localeCompare(String(b), 'tr')),
     [philosophers]
   )
 
   // Benzersiz okullar - memoize edilmiş
   const schools = useMemo(() => 
-    [...new Set(philosophers.map(p => p.school))].sort(),
+    [...new Set(philosophers.map(p => p.school))].sort((a, b) => String(a).localeCompare(String(b), 'tr')),
     [philosophers]
   )
 
   // Benzersiz şehirler - memoize edilmiş
   const cities = useMemo(() => 
-    [...new Set(philosophers.map(p => p.birthCity))].sort(),
+    [...new Set(philosophers.map(p => p.birthCity))].sort((a, b) => String(a).localeCompare(String(b), 'tr')),
     [philosophers]
   )
 
@@ -180,28 +182,27 @@ export function PhilosopherProvider({ children }) {
       }
     }
     
-    window.addEventListener('storage', handleCustomStorage)
+    globalThis.addEventListener('storage', handleCustomStorage)
     // Custom event için de dinle
-    window.addEventListener('searchHistoryUpdated', loadHistory)
+    globalThis.addEventListener('searchHistoryUpdated', loadHistory)
     
     return () => {
-      window.removeEventListener('storage', handleCustomStorage)
-      window.removeEventListener('searchHistoryUpdated', loadHistory)
+      globalThis.removeEventListener('storage', handleCustomStorage)
+      globalThis.removeEventListener('searchHistoryUpdated', loadHistory)
     }
   }, [])
 
   // Fuzzy search helper - Levenshtein distance benzeri basit fuzzy matching
   const fuzzyMatch = useCallback((text, query) => {
-    const lowerText = text.toLowerCase()
-    const lowerQuery = query.toLowerCase()
+    const lowerText = String(text ?? '').toLowerCase()
+    const lowerQuery = String(query ?? '').toLowerCase()
     
     // Tam eşleşme
     if (lowerText.includes(lowerQuery)) return 1
     
     // Karakter bazlı eşleşme (basit fuzzy)
     let textIndex = 0
-    for (let i = 0; i < lowerQuery.length; i++) {
-      const char = lowerQuery[i]
+    for (const char of lowerQuery) {
       const foundIndex = lowerText.indexOf(char, textIndex)
       if (foundIndex === -1) return 0
       textIndex = foundIndex + 1
@@ -211,38 +212,45 @@ export function PhilosopherProvider({ children }) {
 
   // Filtrelenmiş filozoflar - memoize edilmiş (gelişmiş arama ile)
   const filteredPhilosophers = useMemo(() => {
-    const lowerSearchQuery = searchQuery.toLowerCase()
+    const q = deferredSearchQuery
+    const lowerSearchQuery = q.toLowerCase()
     
     return philosophers.filter(philosopher => {
       // Gelişmiş arama - tam metin arama (eserler, fikirler dahil)
-      let matchesSearch = searchQuery === ''
+      let matchesSearch = q === ''
       
-      if (searchQuery !== '') {
+      if (q !== '') {
+        const name = String(philosopher.name ?? '')
+        const nameEn = String(philosopher.nameEn ?? '')
+        const birthCity = String(philosopher.birthCity ?? '')
+        const school = String(philosopher.school ?? '')
+        const biography = String(philosopher.biography ?? '')
+
         // İsim araması
-        const nameMatch = philosopher.name.toLowerCase().includes(lowerSearchQuery) ||
-          philosopher.nameEn.toLowerCase().includes(lowerSearchQuery)
+        const nameMatch = name.toLowerCase().includes(lowerSearchQuery) ||
+          nameEn.toLowerCase().includes(lowerSearchQuery)
         
         // Şehir ve okul araması
-        const locationMatch = philosopher.birthCity.toLowerCase().includes(lowerSearchQuery) ||
-          philosopher.school.toLowerCase().includes(lowerSearchQuery)
+        const locationMatch = birthCity.toLowerCase().includes(lowerSearchQuery) ||
+          school.toLowerCase().includes(lowerSearchQuery)
         
         // Eserler araması
         const worksMatch = philosopher.works?.some(work =>
-          work.title.toLowerCase().includes(lowerSearchQuery) ||
-          (work.description && work.description.toLowerCase().includes(lowerSearchQuery))
+          String(work.title ?? '').toLowerCase().includes(lowerSearchQuery) ||
+          String(work.description ?? '').toLowerCase().includes(lowerSearchQuery)
         ) || false
         
         // Fikirler araması
         const ideasMatch = philosopher.keyIdeas?.some(idea =>
-          idea.toLowerCase().includes(lowerSearchQuery)
+          String(idea ?? '').toLowerCase().includes(lowerSearchQuery)
         ) || false
         
         // Biyografi araması
-        const bioMatch = philosopher.biography?.toLowerCase().includes(lowerSearchQuery) || false
+        const bioMatch = biography.toLowerCase().includes(lowerSearchQuery) || false
         
         // Fuzzy search (eğer tam eşleşme yoksa)
-        const fuzzyNameMatch = !nameMatch && fuzzyMatch(philosopher.name, searchQuery) > 0
-        const fuzzyNameEnMatch = !nameMatch && fuzzyMatch(philosopher.nameEn, searchQuery) > 0
+        const fuzzyNameMatch = !nameMatch && fuzzyMatch(name, q) > 0
+        const fuzzyNameEnMatch = !nameMatch && fuzzyMatch(nameEn, q) > 0
         
         matchesSearch = nameMatch || locationMatch || worksMatch || ideasMatch || bioMatch || 
           fuzzyNameMatch || fuzzyNameEnMatch
@@ -263,9 +271,9 @@ export function PhilosopherProvider({ children }) {
 
       return matchesSearch && matchesPeriod && matchesSchool && matchesCity && matchesTimeRange
     })
-  }, [philosophers, searchQuery, filters, timeRange, fuzzyMatch])
+  }, [philosophers, deferredSearchQuery, filters, timeRange, fuzzyMatch])
 
-  const value = {
+  const value = useMemo(() => ({
     philosophers,
     filteredPhilosophers,
     selectedPhilosopher,
@@ -287,8 +295,27 @@ export function PhilosopherProvider({ children }) {
     toggleFavorite,
     isFavorite,
     searchHistory,
-    addToSearchHistory
-  }
+    addToSearchHistory,
+  }), [
+    philosophers,
+    filteredPhilosophers,
+    selectedPhilosopher,
+    searchQuery,
+    filters,
+    timeRange,
+    periods,
+    schools,
+    cities,
+    minYear,
+    maxYear,
+    recentlyViewed,
+    addToRecentlyViewed,
+    favorites,
+    toggleFavorite,
+    isFavorite,
+    searchHistory,
+    addToSearchHistory,
+  ])
 
   return (
     <PhilosopherContext.Provider value={value}>
@@ -303,5 +330,9 @@ export function usePhilosophers() {
     throw new Error('usePhilosophers must be used within PhilosopherProvider')
   }
   return context
+}
+
+PhilosopherProvider.propTypes = {
+  children: PropTypes.node,
 }
 

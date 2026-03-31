@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Calendar, MapPin, Book, Lightbulb, Users, Star, Share2 } from 'lucide-react'
@@ -9,12 +9,36 @@ import { ImageSkeleton } from '@/components/Skeleton'
 const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, onOpenChange }) {
   const { toggleFavorite, isFavorite } = usePhilosophers()
   const [imageLoading, setImageLoading] = useState(true)
+  const [shareFeedback, setShareFeedback] = useState('')
+  const shareFeedbackTimerRef = useRef(null)
   
+  useEffect(() => {
+    if (!philosopher) return
+    setImageLoading(true)
+  }, [philosopher?.id, philosopher?.photo])
+
+  useEffect(() => {
+    return () => {
+      if (shareFeedbackTimerRef.current) {
+        clearTimeout(shareFeedbackTimerRef.current)
+        shareFeedbackTimerRef.current = null
+      }
+    }
+  }, [])
+
+  const shareUrl = useMemo(() => {
+    if (!philosopher) return ''
+    const baseUrl = import.meta.env.BASE_URL ?? '/'
+    const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
+    const origin = globalThis?.location?.origin ?? ''
+    const url = new URL(`${base}map`, origin || 'http://localhost')
+    url.searchParams.set('philosopher', String(philosopher.id))
+    return url.toString()
+  }, [philosopher?.id])
+
   if (!philosopher) return null
 
   const favorite = isFavorite(philosopher.id)
-
-  const shareUrl = `${window.location.origin}/ideatlasi/map?philosopher=${encodeURIComponent(philosopher.id)}`
 
   const handleShare = async () => {
     try {
@@ -24,6 +48,9 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
           text: `${philosopher.name} - İdea Atlası`,
           url: shareUrl,
         })
+        setShareFeedback('Paylaşıldı')
+        if (shareFeedbackTimerRef.current) clearTimeout(shareFeedbackTimerRef.current)
+        shareFeedbackTimerRef.current = setTimeout(() => setShareFeedback(''), 1500)
         return
       }
     } catch {
@@ -32,9 +59,13 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
     try {
       await navigator.clipboard.writeText(shareUrl)
+      setShareFeedback('Link kopyalandı')
     } catch {
       // ignore if clipboard not available
+      setShareFeedback('Kopyalanamadı')
     }
+    if (shareFeedbackTimerRef.current) clearTimeout(shareFeedbackTimerRef.current)
+    shareFeedbackTimerRef.current = setTimeout(() => setShareFeedback(''), 1500)
   }
 
   return (
@@ -95,6 +126,14 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
                 </Button>
               </div>
             </div>
+            <p className="sr-only" aria-live="polite">
+              {shareFeedback}
+            </p>
+            {shareFeedback && (
+              <p className="text-[10px] sm:text-xs text-muted-foreground -mt-1" aria-hidden="true">
+                {shareFeedback}
+              </p>
+            )}
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-4 text-[10px] sm:text-sm">
               <div className="flex items-center gap-2">
