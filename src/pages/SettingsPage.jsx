@@ -8,7 +8,7 @@ function SettingsPage() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="min-h-screen bg-background p-4 sm:p-8">
       <div className="max-w-2xl mx-auto space-y-6">
         <Button
           variant="ghost"
@@ -23,10 +23,10 @@ function SettingsPage() {
         
         <div className="space-y-4">
           <div className="p-4 border rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.01] animate-smooth-scale-in" style={{ animationDelay: '0.1s' }}>
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold mb-1">Tema</h2>
-                <p className="text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="min-w-0">
+                <h2 className="text-base sm:text-lg font-semibold mb-1">Tema</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Açık veya koyu tema seçin
                 </p>
               </div>
@@ -34,7 +34,7 @@ function SettingsPage() {
                 variant="outline"
                 size="lg"
                 onClick={toggleTheme}
-                className="flex items-center gap-2 transform-gpu hover:scale-105 hover:shadow-md active:scale-[0.99]"
+                className="w-full sm:w-auto justify-center flex items-center gap-2 transform-gpu hover:scale-105 hover:shadow-md active:scale-[0.99]"
               >
                 {theme === 'dark' ? (
                   <>
@@ -52,8 +52,8 @@ function SettingsPage() {
           </div>
 
           <div className="p-4 border rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.01] animate-smooth-scale-in" style={{ animationDelay: '0.15s' }}>
-            <h2 className="text-lg font-semibold mb-2">Dil</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-base sm:text-lg font-semibold mb-2">Dil</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Dil ayarları yakında eklenecek
             </p>
           </div>
