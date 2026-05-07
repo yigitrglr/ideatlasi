@@ -70,17 +70,17 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange} title={philosopher.name}>
-      <DialogContent className="space-y-3 sm:space-y-6 text-xs sm:text-base">
+      <DialogContent className="space-y-3 sm:space-y-6 text-xs sm:text-base lg:text-lg">
         {/* Fotoğraf ve Temel Bilgiler */}
-        <div className="flex flex-col md:flex-row gap-3 sm:gap-6 animate-smooth-fade-in">
+        <div className="flex flex-col md:flex-row gap-3 sm:gap-6 lg:gap-8 animate-smooth-fade-in">
           <div className="flex-shrink-0 mx-auto md:mx-0 relative">
             {imageLoading && (
-              <ImageSkeleton className="w-28 h-28 sm:w-44 sm:h-44 absolute inset-0" />
+              <ImageSkeleton className="w-28 h-28 sm:w-44 sm:h-44 lg:w-52 lg:h-52 absolute inset-0" />
             )}
             <img
               src={philosopher.photo}
               alt={philosopher.name}
-              className={`w-28 h-28 sm:w-44 sm:h-44 object-cover rounded-lg border transition-opacity duration-300 ease-out hover:scale-105 ${
+              className={`w-28 h-28 sm:w-44 sm:h-44 lg:w-52 lg:h-52 object-cover rounded-lg border transition-opacity duration-300 ease-out hover:scale-105 ${
                 imageLoading ? 'opacity-0' : 'opacity-100'
               }`}
               loading="lazy"
@@ -94,8 +94,8 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
           <div className="flex-1 space-y-2 sm:space-y-4 mt-1">
             <div className="flex items-start justify-between relative">
               <div className="flex-1 pr-8 sm:pr-10">
-                <h3 className="text-sm sm:text-2xl font-bold leading-tight">{philosopher.name}</h3>
-                <p className="text-[10px] sm:text-base text-muted-foreground italic mt-0.5">{philosopher.nameEn}</p>
+                <h3 className="text-sm sm:text-2xl lg:text-3xl font-bold leading-tight">{philosopher.name}</h3>
+                <p className="text-[10px] sm:text-base lg:text-lg text-muted-foreground italic mt-0.5">{philosopher.nameEn}</p>
               </div>
               <div className="absolute top-0 right-0 flex items-center gap-1">
                 <Button
@@ -130,12 +130,12 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
               {shareFeedback}
             </p>
             {shareFeedback && (
-              <p className="text-[10px] sm:text-xs text-muted-foreground -mt-1" aria-hidden="true">
+              <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground -mt-1" aria-hidden="true">
                 {shareFeedback}
               </p>
             )}
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-4 text-[10px] sm:text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-4 lg:gap-5 text-[10px] sm:text-sm lg:text-base">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <span>
@@ -161,8 +161,8 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
 
         {/* Biyografi */}
         <div className="mt-4 sm:mt-6">
-          <h4 className="text-xs sm:text-lg font-semibold mb-2 sm:mb-3">Biyografi</h4>
-          <p className="text-[10px] sm:text-base leading-relaxed text-foreground">{philosopher.biography}</p>
+          <h4 className="text-xs sm:text-lg lg:text-xl font-semibold mb-2 sm:mb-3">Biyografi</h4>
+          <p className="text-[10px] sm:text-base lg:text-lg leading-relaxed text-foreground">{philosopher.biography}</p>
         </div>
 
         {/* Eserler */}

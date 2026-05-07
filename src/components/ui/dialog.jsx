@@ -93,9 +93,8 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
 
   return (
     <>
-      <div 
-        role="button"
-        tabIndex={0}
+      <button
+        type="button"
         className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
         style={{
           opacity: isClosing ? 0 : (isMounted ? 1 : 0),
@@ -118,7 +117,7 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
           // Mobile: smaller, bottom sheet style (leave space so drag handle is always visible)
           "inset-x-0 bottom-0 max-h-[80vh] rounded-t-2xl border-t border-l border-r",
           // Desktop: centered modal
-          "sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:max-w-2xl sm:max-h-[90vh] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg sm:border sm:mx-0",
+          "sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:max-w-2xl sm:max-h-[90vh] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg sm:border sm:mx-0 lg:max-w-4xl lg:max-h-[92vh]",
           !isDragging && isMounted && !isClosing && "opacity-100 translate-y-0 sm:scale-100",
           !isDragging && !isMounted && "opacity-0 translate-y-full sm:translate-y-0 sm:scale-95",
           !isDragging && isClosing && "opacity-0 translate-y-full sm:translate-y-0 sm:scale-95",

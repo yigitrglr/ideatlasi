@@ -171,7 +171,20 @@ function MapPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const navigate = useNavigate()
-  const { philosophers, filteredPhilosophers, selectedPhilosopher, setSelectedPhilosopher, addToRecentlyViewed, addToSearchHistory, searchQuery } = usePhilosophers()
+  const {
+    philosophers,
+    filteredPhilosophers,
+    selectedPhilosopher,
+    setSelectedPhilosopher,
+    addToRecentlyViewed,
+    addToSearchHistory,
+    searchQuery,
+    setSearchQuery,
+    setFilters,
+    setTimeRange,
+    minYear,
+    maxYear,
+  } = usePhilosophers()
   const { theme, toggleTheme } = useTheme()
   const iconCacheRef = useRef(new Map())
 
@@ -223,6 +236,12 @@ function MapPage() {
     setSearchOpen(prev => !prev)
     setMenuOpen(false)
   }, [])
+
+  const resetAllFilters = useCallback(() => {
+    setSearchQuery('')
+    setFilters({ period: 'all', school: 'all', city: 'all' })
+    setTimeRange({ start: minYear, end: maxYear })
+  }, [setFilters, setSearchQuery, setTimeRange, minYear, maxYear])
 
   // Marker iconları oluştur - memoize edilmiş
   const markerIcons = useMemo(() => {
@@ -290,6 +309,7 @@ function MapPage() {
               size="icon"
               onClick={toggleSearch}
               title="Ara ve Filtrele (Ctrl+K)"
+              aria-label="Ara ve filtrele"
               className={searchOpen ? 'bg-accent/60' : ''}
             >
               <Search className="h-5 w-5" />
@@ -299,6 +319,7 @@ function MapPage() {
               size="icon"
               onClick={toggleTheme}
               title="Tema Değiştir"
+              aria-label="Tema değiştir"
               className="transition-transform duration-500 ease-out hover:rotate-180"
             >
               {theme === 'dark' ? (
@@ -312,6 +333,7 @@ function MapPage() {
               size="icon"
               onClick={toggleMenu}
               title="Menü (Ctrl+M)"
+              aria-label="Menüyü aç"
               className={`transition-all duration-300 ease-out hover:scale-110 ${menuOpen ? 'bg-accent' : ''}`}
             >
               <Menu className="h-5 w-5" />
@@ -319,6 +341,38 @@ function MapPage() {
           </div>
         </div>
       </div>
+
+      {!selectedPhilosopher && !menuOpen && !searchOpen && filteredPhilosophers.length === 0 && (
+        <div className="absolute inset-x-3 top-20 sm:top-24 z-[950]">
+          <div className="mx-auto max-w-xl bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-lg p-4 sm:p-5 animate-smooth-fade-in">
+            <h3 className="text-sm sm:text-base font-semibold">Sonuç bulunamadı</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              Filtreleri sıfırlayıp tekrar deneyebilir veya arama panelini açabilirsiniz.
+            </p>
+            <div className="flex gap-2 mt-3">
+              <Button
+                type="button"
+                variant="secondary"
+                className="flex-1"
+                onClick={() => {
+                  resetAllFilters()
+                  setSearchOpen(true)
+                }}
+              >
+                Filtreleri sıfırla
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => setSearchOpen(true)}
+              >
+                Ara & Filtrele
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Sheet open={menuOpen} onOpenChange={setMenuOpen} title="Menü">
         <div className="space-y-2">

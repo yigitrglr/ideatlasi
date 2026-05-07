@@ -28,9 +28,8 @@ const Sheet = ({ open, onOpenChange, children, side = "right", title }) => {
 
   return (
     <>
-      <div 
-        role="button"
-        tabIndex={0}
+      <button
+        type="button"
         className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         style={{
           opacity: open ? 1 : 0,
