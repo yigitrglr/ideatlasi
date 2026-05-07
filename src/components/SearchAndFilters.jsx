@@ -191,10 +191,10 @@ function SearchAndFilters({ open, onOpenChange }) {
                     <X className="h-3 w-3" />
                   </button>
                 </div>
-                {searchHistory.map((historyItem, index) => (
+                {searchHistory.map((historyItem) => (
                   <button
                     type="button"
-                    key={historyItem + index}
+                    key={historyItem}
                     className="w-full text-left px-3 py-2 text-sm hover:bg-muted flex items-center gap-2"
                     onClick={() => {
                       setSearchQuery(historyItem)

@@ -61,6 +61,7 @@ const Sheet = ({ open, onOpenChange, children, side = "right", title }) => {
               variant="ghost"
               size="icon"
               onClick={() => onOpenChange(false)}
+              aria-label="Kapat"
             >
               <X className="h-4 w-4" />
             </Button>

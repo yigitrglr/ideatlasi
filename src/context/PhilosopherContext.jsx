@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useMemo, useEffect, useCallback, useDeferredValue } from 'react'
 import PropTypes from 'prop-types'
 import philosophersData from '@/data/philosophers.json'
+import { safeGetItem, safeSetItem } from '@/lib/safeStorage'
 
 const PhilosopherContext = createContext()
 
@@ -60,43 +61,40 @@ export function PhilosopherProvider({ children }) {
 
   // Son görüntülenen filozoflar
   const [recentlyViewed, setRecentlyViewed] = useState(() => {
-    try {
-      const stored = localStorage.getItem('recentlyViewed')
-      if (stored) {
+    const stored = safeGetItem('recentlyViewed')
+    if (stored) {
+      try {
         const parsed = JSON.parse(stored)
-        // ID'leri kullanarak filozofları bul
         return parsed.map(id => philosophers.find(p => p.id === id)).filter(Boolean)
+      } catch (e) {
+        console.error('Error loading recently viewed:', e)
       }
-    } catch (e) {
-      console.error('Error loading recently viewed:', e)
     }
     return []
   })
 
   // Favoriler - localStorage'dan yükle
   const [favorites, setFavorites] = useState(() => {
-    try {
-      const stored = localStorage.getItem('favorites')
-      if (stored) {
+    const stored = safeGetItem('favorites')
+    if (stored) {
+      try {
         const parsed = JSON.parse(stored)
-        // ID'leri kullanarak filozofları bul
         return parsed.map(id => philosophers.find(p => p.id === id)).filter(Boolean)
+      } catch (e) {
+        console.error('Error loading favorites:', e)
       }
-    } catch (e) {
-      console.error('Error loading favorites:', e)
     }
     return []
   })
 
   // Favorileri philosophers değiştiğinde güncelle
   useEffect(() => {
+    const stored = safeGetItem('favorites')
+    if (!stored) return
     try {
-      const stored = localStorage.getItem('favorites')
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        const updated = parsed.map(id => philosophers.find(p => p.id === id)).filter(Boolean)
-        setFavorites(updated)
-      }
+      const parsed = JSON.parse(stored)
+      const updated = parsed.map(id => philosophers.find(p => p.id === id)).filter(Boolean)
+      setFavorites(updated)
     } catch (e) {
       console.error('Error updating favorites:', e)
     }
@@ -108,7 +106,7 @@ export function PhilosopherProvider({ children }) {
       const filtered = prev.filter(p => p.id !== philosopher.id)
       const updated = [philosopher, ...filtered].slice(0, 5) // Son 5 tanesi
       // Sadece ID'leri kaydet
-      localStorage.setItem('recentlyViewed', JSON.stringify(updated.map(p => p.id)))
+      safeSetItem('recentlyViewed', JSON.stringify(updated.map(p => p.id)))
       return updated
     })
   }, [])
@@ -126,7 +124,7 @@ export function PhilosopherProvider({ children }) {
         updated = [...prev, philosopher]
       }
       // Sadece ID'leri kaydet
-      localStorage.setItem('favorites', JSON.stringify(updated.map(p => p.id)))
+      safeSetItem('favorites', JSON.stringify(updated.map(p => p.id)))
       return updated
     })
   }, [])
@@ -139,7 +137,7 @@ export function PhilosopherProvider({ children }) {
   // Arama geçmişi
   const [searchHistory, setSearchHistory] = useState(() => {
     try {
-      const stored = localStorage.getItem('searchHistory')
+      const stored = safeGetItem('searchHistory')
       return stored ? JSON.parse(stored) : []
     } catch {
       return []
@@ -152,7 +150,7 @@ export function PhilosopherProvider({ children }) {
     setSearchHistory(prev => {
       const filtered = prev.filter(q => q.toLowerCase() !== query.toLowerCase())
       const updated = [query.trim(), ...filtered].slice(0, 10) // Son 10 arama
-      localStorage.setItem('searchHistory', JSON.stringify(updated))
+      safeSetItem('searchHistory', JSON.stringify(updated))
       return updated
     })
   }, [])
@@ -161,7 +159,7 @@ export function PhilosopherProvider({ children }) {
   useEffect(() => {
     const loadHistory = () => {
       try {
-        const stored = localStorage.getItem('searchHistory')
+        const stored = safeGetItem('searchHistory')
         if (stored) {
           const parsed = JSON.parse(stored)
           setSearchHistory(parsed)
