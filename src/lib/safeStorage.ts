@@ -1,4 +1,4 @@
-export function safeGetItem(key) {
+export function safeGetItem(key: string): string | null {
   try {
     return globalThis?.localStorage?.getItem(key) ?? null
   } catch {
@@ -6,7 +6,7 @@ export function safeGetItem(key) {
   }
 }
 
-export function safeSetItem(key, value) {
+export function safeSetItem(key: string, value: string): boolean {
   try {
     globalThis?.localStorage?.setItem(key, value)
     return true

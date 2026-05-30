@@ -20,7 +20,7 @@ function SettingsPage() {
         </Button>
 
         <h1 className="text-3xl font-bold animate-smooth-fade-in">Ayarlar</h1>
-        
+
         <div className="space-y-4">
           <div className="p-4 border rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-[1.01] animate-smooth-scale-in" style={{ animationDelay: '0.1s' }}>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -64,4 +64,3 @@ function SettingsPage() {
 }
 
 export default SettingsPage
-

@@ -1,35 +1,37 @@
-import PropTypes from 'prop-types'
+type SkeletonVariant = 'rectangular' | 'circular' | 'text' | 'avatar'
 
-export function Skeleton({ className, variant = 'rectangular' }) {
+interface SkeletonProps {
+  className?: string
+  variant?: SkeletonVariant
+}
+
+const variantClasses: Record<SkeletonVariant, string> = {
+  rectangular: '',
+  circular: 'rounded-full',
+  text: 'h-4',
+  avatar: 'rounded-full',
+}
+
+export function Skeleton({ className, variant = 'rectangular' }: SkeletonProps) {
   const baseClasses = 'skeleton'
-  const variantClasses = {
-    rectangular: '',
-    circular: 'rounded-full',
-    text: 'h-4',
-    avatar: 'rounded-full',
-  }
 
-  return (
-    <div className={`${baseClasses} ${variantClasses[variant]} ${className || ''}`} />
-  )
+  return <div className={`${baseClasses} ${variantClasses[variant]} ${className || ''}`} />
 }
 
-Skeleton.propTypes = {
-  className: PropTypes.string,
-  variant: PropTypes.oneOf(['rectangular', 'circular', 'text', 'avatar']),
+interface ImageSkeletonProps {
+  className?: string
 }
 
-export function ImageSkeleton({ className }) {
-  return (
-    <div className={`skeleton rounded-lg ${className || 'w-full h-full'}`} />
-  )
+export function ImageSkeleton({ className }: ImageSkeletonProps) {
+  return <div className={`skeleton rounded-lg ${className || 'w-full h-full'}`} />
 }
 
-ImageSkeleton.propTypes = {
-  className: PropTypes.string,
+interface TextSkeletonProps {
+  lines?: number
+  className?: string
 }
 
-export function TextSkeleton({ lines = 3, className }) {
+export function TextSkeleton({ lines = 3, className }: TextSkeletonProps) {
   return (
     <div className={`space-y-2 ${className || ''}`}>
       {Array.from({ length: lines }).map((_, i) => (
@@ -41,11 +43,6 @@ export function TextSkeleton({ lines = 3, className }) {
       ))}
     </div>
   )
-}
-
-TextSkeleton.propTypes = {
-  lines: PropTypes.number,
-  className: PropTypes.string,
 }
 
 export function PhilosopherCardSkeleton() {

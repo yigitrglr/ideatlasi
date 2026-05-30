@@ -3,18 +3,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { PhilosopherProvider } from './context/PhilosopherContext'
 import { ThemeProvider } from './context/ThemeContext'
 import MenuPage from './pages/MenuPage'
+import { AboutPageSkeleton, PhilosopherCardSkeleton, SettingsPageSkeleton } from './components/Skeleton'
 
-// Get base path from Vite environment
 const basePath = import.meta.env.BASE_URL
 
-// Code Splitting - Lazy loading
 const MapPage = lazy(() => import('./pages/MapPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
 
-import { AboutPageSkeleton, PhilosopherCardSkeleton, SettingsPageSkeleton } from './components/Skeleton'
-
-// Loading component
 function LoadingFallback() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center animate-fade-in">
@@ -36,29 +32,29 @@ function App() {
         <Router basename={basePath === '/' ? undefined : basePath.slice(0, -1)}>
           <Routes>
             <Route path="/" element={<MenuPage />} />
-            <Route 
-              path="/map" 
+            <Route
+              path="/map"
               element={
                 <Suspense fallback={<LoadingFallback />}>
                   <MapPage />
                 </Suspense>
-              } 
+              }
             />
-            <Route 
-              path="/settings" 
+            <Route
+              path="/settings"
               element={
                 <Suspense fallback={<SettingsPageSkeleton />}>
                   <SettingsPage />
                 </Suspense>
-              } 
+              }
             />
-            <Route 
-              path="/about" 
+            <Route
+              path="/about"
               element={
                 <Suspense fallback={<AboutPageSkeleton />}>
                   <AboutPage />
                 </Suspense>
-              } 
+              }
             />
           </Routes>
         </Router>
@@ -68,4 +64,3 @@ function App() {
 }
 
 export default App
-

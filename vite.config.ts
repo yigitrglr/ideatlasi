@@ -29,20 +29,20 @@ export default defineConfig({
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
             src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
-          }
-        ]
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+        ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
@@ -54,9 +54,9 @@ export default defineConfig({
               cacheName: 'openstreetmap-tiles',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
-              }
-            }
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+              },
+            },
           },
           {
             urlPattern: /^https:\/\/.*\.basemaps\.cartocdn\.com\/.*/i,
@@ -65,9 +65,9 @@ export default defineConfig({
               cacheName: 'cartodb-tiles',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
-              }
-            }
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+              },
+            },
           },
           {
             urlPattern: /^https:\/\/upload\.wikimedia\.org\/.*/i,
@@ -76,17 +76,17 @@ export default defineConfig({
               cacheName: 'wikimedia-images',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-              }
-            }
-          }
-        ]
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+        ],
       },
       devOptions: {
         enabled: true,
-        type: 'module'
-      }
-    })
+        type: 'module',
+      },
+    }),
   ],
   resolve: {
     alias: {
@@ -94,4 +94,3 @@ export default defineConfig({
     },
   },
 })
-

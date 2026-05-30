@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
 import { Search, X, History, Filter, Star, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,9 +7,19 @@ import { Slider } from '@/components/ui/slider'
 import { usePhilosophers } from '@/context/PhilosopherContext'
 import { Sheet } from '@/components/ui/sheet'
 import SearchSuggestions from '@/components/SearchSuggestions'
+import type { FilterValue, Philosopher, SearchSuggestion } from '@/types/philosopher'
 
-function SearchAndFilters({ open, onOpenChange }) {
-  const canUseWindow = !!globalThis?.window
+interface SearchAndFiltersProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+function isPhilosopher(suggestion: SearchSuggestion): suggestion is Philosopher {
+  return 'id' in suggestion && typeof (suggestion as Philosopher).id === 'number'
+}
+
+function SearchAndFilters({ open, onOpenChange }: SearchAndFiltersProps) {
+  const canUseWindow = typeof globalThis.window !== 'undefined'
   const [isMobile, setIsMobile] = useState(
     canUseWindow ? globalThis.window.innerWidth <= 640 : true
   )
@@ -18,11 +27,12 @@ function SearchAndFilters({ open, onOpenChange }) {
   useEffect(() => {
     if (!canUseWindow) return
     const media = globalThis.window.matchMedia('(max-width: 640px)')
-    const handleChange = (e) => setIsMobile(e.matches)
+    const handleChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
     setIsMobile(media.matches)
     media.addEventListener('change', handleChange)
     return () => media.removeEventListener('change', handleChange)
   }, [canUseWindow])
+
   const {
     searchQuery,
     setSearchQuery,
@@ -59,13 +69,13 @@ function SearchAndFilters({ open, onOpenChange }) {
     city: 'filter-city',
   }), [])
 
-  const handleSearchSubmit = (query) => {
+  const handleSearchSubmit = (query: string) => {
     if (query && query.trim() !== '') {
       addToSearchHistory(query.trim())
     }
   }
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery.trim() !== '') {
       handleSearchSubmit(searchQuery)
       setShowSuggestions(false)
@@ -75,15 +85,15 @@ function SearchAndFilters({ open, onOpenChange }) {
 
   const clearSearchHistory = () => {
     try {
-      globalThis?.localStorage?.setItem('searchHistory', JSON.stringify([]))
+      globalThis.localStorage?.setItem('searchHistory', JSON.stringify([]))
     } catch {
       // ignore storage errors
     }
     globalThis.dispatchEvent(new Event('searchHistoryUpdated'))
   }
 
-  const handleSuggestionSelect = (suggestion) => {
-    if (suggestion?.id != null) {
+  const handleSuggestionSelect = (suggestion: SearchSuggestion) => {
+    if (isPhilosopher(suggestion)) {
       handleSearchSubmit(searchQuery)
       setSelectedPhilosopher(suggestion)
       addToRecentlyViewed(suggestion)
@@ -94,7 +104,7 @@ function SearchAndFilters({ open, onOpenChange }) {
       setFilters({ ...filters, city: suggestion.value })
       setSearchQuery('')
       setShowSuggestions(false)
-    } else if (suggestion?.type === 'school') {
+    } else if (suggestion.type === 'school') {
       handleSearchSubmit(searchQuery)
       setFilters({ ...filters, school: suggestion.value })
       setSearchQuery('')
@@ -108,7 +118,7 @@ function SearchAndFilters({ open, onOpenChange }) {
     setTimeRange({ start: minYear, end: maxYear })
   }
 
-  const openPhilosopher = (philosopher) => {
+  const openPhilosopher = (philosopher: Philosopher) => {
     setSelectedPhilosopher(philosopher)
     addToRecentlyViewed(philosopher)
     onOpenChange(false)
@@ -278,7 +288,7 @@ function SearchAndFilters({ open, onOpenChange }) {
               <Select
                 id={controlIds.period}
                 value={filters.period}
-                onChange={(e) => setFilters({ ...filters, period: e.target.value })}
+                onChange={(e) => setFilters({ ...filters, period: e.target.value as FilterValue })}
               >
                 <option value="all">Tümü</option>
                 {periods.map((period) => (
@@ -294,7 +304,7 @@ function SearchAndFilters({ open, onOpenChange }) {
               <Select
                 id={controlIds.school}
                 value={filters.school}
-                onChange={(e) => setFilters({ ...filters, school: e.target.value })}
+                onChange={(e) => setFilters({ ...filters, school: e.target.value as FilterValue })}
               >
                 <option value="all">Tümü</option>
                 {schools.map((school) => (
@@ -310,7 +320,7 @@ function SearchAndFilters({ open, onOpenChange }) {
               <Select
                 id={controlIds.city}
                 value={filters.city}
-                onChange={(e) => setFilters({ ...filters, city: e.target.value })}
+                onChange={(e) => setFilters({ ...filters, city: e.target.value as FilterValue })}
               >
                 <option value="all">Tümü</option>
                 {cities.map((city) => (
@@ -377,10 +387,4 @@ function SearchAndFilters({ open, onOpenChange }) {
   )
 }
 
-SearchAndFilters.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onOpenChange: PropTypes.func.isRequired,
-}
-
 export default SearchAndFilters
-

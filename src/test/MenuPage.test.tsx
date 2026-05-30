@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
-import MenuPage from '../pages/MenuPage'
+import MenuPage from '@/pages/MenuPage'
 
 describe('MenuPage', () => {
   it('renders the title', () => {

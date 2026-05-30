@@ -1,10 +1,10 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import type { Theme, ThemeContextValue } from '@/types/philosopher'
 
-const ThemeContext = createContext()
+const ThemeContext = createContext<ThemeContextValue | null>(null)
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(() => {
     try {
       const savedTheme = globalThis?.localStorage?.getItem('theme')
       if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme
@@ -41,15 +41,10 @@ export function ThemeProvider({ children }) {
   )
 }
 
-export function useTheme() {
+export function useTheme(): ThemeContextValue {
   const context = useContext(ThemeContext)
   if (!context) {
     throw new Error('useTheme must be used within ThemeProvider')
   }
   return context
 }
-
-ThemeProvider.propTypes = {
-  children: PropTypes.node,
-}
-

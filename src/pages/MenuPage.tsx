@@ -6,10 +6,10 @@ function MenuPage() {
   const navigate = useNavigate()
 
   return (
-    <div 
+    <div
       className="min-h-screen flex items-center justify-center transition-all duration-300 ease-out"
       style={{
-        background: `linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--muted)))`
+        background: `linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--muted)))`,
       }}
     >
       <div className="text-center space-y-8 p-4 sm:p-8 animate-smooth-fade-in">
@@ -17,7 +17,7 @@ function MenuPage() {
           <h1 className="text-4xl sm:text-6xl font-bold mb-2 animate-smooth-fade-in transition-colors duration-300 ease-out text-foreground">
             İdea Atlası
           </h1>
-          <p 
+          <p
             className="text-lg sm:text-xl max-w-md mx-auto px-4 animate-smooth-fade-in transition-colors duration-300 ease-out text-muted-foreground"
             style={{ animationDelay: '0.1s' }}
           >
@@ -64,4 +64,3 @@ function MenuPage() {
 }
 
 export default MenuPage
-

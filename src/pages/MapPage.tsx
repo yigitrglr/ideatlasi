@@ -1,6 +1,6 @@
 import { memo, useState, useMemo, useCallback, useEffect, useRef } from 'react'
-import PropTypes from 'prop-types'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import type { LeafletEventHandlerFnMap, LeafletMouseEvent } from 'leaflet'
 import { Menu, Search, Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet } from '@/components/ui/sheet'
@@ -10,38 +10,40 @@ import { useTheme } from '@/context/ThemeContext'
 import PhilosopherDetail from '@/components/PhilosopherDetail'
 import SearchAndFilters from '@/components/SearchAndFilters'
 import { ImageSkeleton } from '@/components/Skeleton'
+import type { Philosopher } from '@/types/philosopher'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import L from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 
-// Leaflet marker icon sorununu düzelt
-delete L.Icon.Default.prototype._getIconUrl
+delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 })
 
-// Dönem bazlı renkler
-const periodColors = {
-  'Antik Yunan': '#3b82f6', // Blue
-  'Helenistik Dönem': '#8b5cf6', // Purple
-  'Geç Antik Çağ': '#ec4899', // Pink
-  'Orta Çağ': '#f59e0b', // Amber
-  'Rönesans': '#10b981', // Emerald
-  'Modern Felsefe': '#ef4444', // Red
-  'Aydınlanma': '#f59e0b', // Amber
-  'Alman İdealizmi': '#6366f1', // Indigo
-  '19. Yüzyıl Felsefesi': '#14b8a6', // Teal
-  '20. Yüzyıl Felsefesi': '#8b5cf6', // Purple
+const periodColors: Record<string, string> = {
+  'Antik Yunan': '#3b82f6',
+  'Helenistik Dönem': '#8b5cf6',
+  'Geç Antik Çağ': '#ec4899',
+  'Orta Çağ': '#f59e0b',
+  'Rönesans': '#10b981',
+  'Modern Felsefe': '#ef4444',
+  'Aydınlanma': '#f59e0b',
+  'Alman İdealizmi': '#6366f1',
+  '19. Yüzyıl Felsefesi': '#14b8a6',
+  '20. Yüzyıl Felsefesi': '#8b5cf6',
 }
 
-// Popup image component with skeleton
-function PhilosopherPopupImage({ philosopher }) {
+interface PhilosopherPopupImageProps {
+  philosopher: Philosopher
+}
+
+function PhilosopherPopupImage({ philosopher }: PhilosopherPopupImageProps) {
   const [imageLoading, setImageLoading] = useState(true)
-  
+
   return (
     <div className="relative mb-2">
       {imageLoading && (
@@ -56,7 +58,7 @@ function PhilosopherPopupImage({ philosopher }) {
         loading="lazy"
         onLoad={() => setImageLoading(false)}
         onError={(e) => {
-          e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(philosopher.name)}&backgroundColor=b6e3f4`
+          e.currentTarget.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(philosopher.name)}&backgroundColor=b6e3f4`
           setImageLoading(false)
         }}
       />
@@ -64,16 +66,15 @@ function PhilosopherPopupImage({ philosopher }) {
   )
 }
 
-PhilosopherPopupImage.propTypes = {
-  philosopher: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    photo: PropTypes.string,
-  }).isRequired,
+interface MarkerItemProps {
+  philosopher: Philosopher
+  icon: L.DivIcon
+  onMarkerClick: (philosopher: Philosopher) => void
 }
 
-const MarkerItem = memo(function MarkerItem({ philosopher, icon, onMarkerClick }) {
-  const eventHandlers = useMemo(() => ({
-    click: (e) => {
+const MarkerItem = memo(function MarkerItem({ philosopher, icon, onMarkerClick }: MarkerItemProps) {
+  const eventHandlers = useMemo((): LeafletEventHandlerFnMap => ({
+    click: (e: LeafletMouseEvent) => {
       e.originalEvent.stopPropagation()
       onMarkerClick(philosopher)
     },
@@ -113,29 +114,10 @@ const MarkerItem = memo(function MarkerItem({ philosopher, icon, onMarkerClick }
   )
 })
 
-MarkerItem.propTypes = {
-  philosopher: PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    name: PropTypes.string.isRequired,
-    photo: PropTypes.string,
-    birthCity: PropTypes.string,
-    school: PropTypes.string,
-    period: PropTypes.string,
-    birthYear: PropTypes.number,
-    deathYear: PropTypes.number,
-    lat: PropTypes.number.isRequired,
-    lng: PropTypes.number.isRequired,
-  }).isRequired,
-  icon: PropTypes.any,
-  onMarkerClick: PropTypes.func.isRequired,
-}
-
-// Özel marker icon oluştur
-function createCustomIcon(color, name, index = 0) {
-  // Aynı konumdaki marker'lar için offset ekle
+function createCustomIcon(color: string, name: string, index = 0): L.DivIcon {
   const offsetX = (index % 3) * 8 - 8
   const offsetY = Math.floor(index / 3) * 8 - 8
-  
+
   return L.divIcon({
     className: 'custom-marker',
     html: `
@@ -186,9 +168,8 @@ function MapPage() {
     maxYear,
   } = usePhilosophers()
   const { theme, toggleTheme } = useTheme()
-  const iconCacheRef = useRef(new Map())
+  const iconCacheRef = useRef<Map<string, L.DivIcon>>(new Map())
 
-  // URL'den filozof paylaşım linki ile aç
   useEffect(() => {
     const params = new URLSearchParams(globalThis.location?.search ?? '')
     const id = params.get('philosopher')
@@ -201,21 +182,17 @@ function MapPage() {
     }
   }, [philosophers, setSelectedPhilosopher, addToRecentlyViewed])
 
-  // Klavye kısayolları
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      // ESC tuşu ile menüleri kapat
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setMenuOpen(false)
         setSearchOpen(false)
       }
-      // Ctrl/Cmd + K ile arama aç/kapat
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault()
         setSearchOpen(prev => !prev)
         setMenuOpen(false)
       }
-      // Ctrl/Cmd + M ile menü aç/kapat
       if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
         e.preventDefault()
         setMenuOpen(prev => !prev)
@@ -243,16 +220,15 @@ function MapPage() {
     setTimeRange({ start: minYear, end: maxYear })
   }, [setFilters, setSearchQuery, setTimeRange, minYear, maxYear])
 
-  // Marker iconları oluştur - memoize edilmiş
-  const markerIcons = useMemo(() => {
-    const icons = {}
-    const positionMap = new Map() // Aynı konumdaki marker'ları takip et
-    
+  const markerIcons = useMemo((): Record<number, L.DivIcon> => {
+    const icons: Record<number, L.DivIcon> = {}
+    const positionMap = new Map<string, number>()
+
     filteredPhilosophers.forEach(philosopher => {
       const positionKey = `${philosopher.lat},${philosopher.lng}`
       const index = positionMap.get(positionKey) || 0
       positionMap.set(positionKey, index + 1)
-      
+
       const color = periodColors[philosopher.period] || '#6b7280'
       const initial = String(philosopher.name ?? '').charAt(0) || '?'
       const cacheKey = `${color}|${initial}|${index}`
@@ -268,27 +244,22 @@ function MapPage() {
     return icons
   }, [filteredPhilosophers])
 
-  // Harita tile URL'si - tema bazlı
   const tileUrl = useMemo(() => {
     if (theme === 'dark') {
-      // CartoDB Dark Matter - siyah harita teması
       return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
     }
     return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
   }, [theme])
 
-  // Marker click handler - memoize edilmiş
-  const handleMarkerClick = useCallback((philosopher) => {
+  const handleMarkerClick = useCallback((philosopher: Philosopher) => {
     setSelectedPhilosopher(philosopher)
     addToRecentlyViewed(philosopher)
-    // Eğer arama yapılmışsa, arama geçmişine ekle
     if (searchQuery && searchQuery.trim() !== '') {
       addToSearchHistory(searchQuery.trim())
     }
   }, [setSelectedPhilosopher, addToRecentlyViewed, searchQuery, addToSearchHistory])
 
-  // Modal kapatma handler
-  const handleCloseModal = useCallback((open) => {
+  const handleCloseModal = useCallback((open: boolean) => {
     if (!open) setSelectedPhilosopher(null)
   }, [setSelectedPhilosopher])
 

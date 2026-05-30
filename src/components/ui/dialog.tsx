@@ -1,17 +1,23 @@
-import { useState, useEffect, useCallback, useRef } from "react"
-import PropTypes from "prop-types"
-import { X } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "./button"
+import { useState, useEffect, useCallback, useRef, type ReactNode, type CSSProperties, type TouchEvent, type HTMLAttributes } from 'react'
+import { X } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from './button'
 
-const Dialog = ({ open, onOpenChange, children, title }) => {
+interface DialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  children?: ReactNode
+  title?: string
+}
+
+const Dialog = ({ open, onOpenChange, children, title }: DialogProps) => {
   const [isClosing, setIsClosing] = useState(false)
   const [shouldRender, setShouldRender] = useState(open)
   const [isMounted, setIsMounted] = useState(false)
   const [dragTranslateY, setDragTranslateY] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
-  const touchStartYRef = useRef(null)
-  const handleRef = useRef(null)
+  const touchStartYRef = useRef<number | null>(null)
+  const handleRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (open) {
@@ -53,14 +59,14 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
     }
   }, [onOpenChange, isDragging])
 
-  const handleTouchStart = useCallback((e) => {
+  const handleTouchStart = useCallback((e: TouchEvent<HTMLDivElement>) => {
     if (e.touches?.length === 1) {
       touchStartYRef.current = e.touches[0].clientY
       setIsDragging(true)
     }
   }, [])
 
-  const handleTouchEnd = useCallback((e) => {
+  const handleTouchEnd = useCallback((e: TouchEvent<HTMLDivElement>) => {
     const startY = touchStartYRef.current
     touchStartYRef.current = null
     setIsDragging(false)
@@ -73,11 +79,10 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
     if (deltaY > 80) onOpenChange(false)
   }, [onOpenChange])
 
-  // Non-passive touch listeners so preventDefault works and drag isn't stolen by scroll
   useEffect(() => {
     const el = handleRef.current
     if (!el) return
-    const onMove = (e) => {
+    const onMove = (e: globalThis.TouchEvent) => {
       const startY = touchStartYRef.current
       if (startY == null || !e.touches || e.touches.length === 0) return
       e.preventDefault()
@@ -91,6 +96,10 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
 
   if (!shouldRender) return null
 
+  const dragStyle: CSSProperties | undefined = isDragging
+    ? ({ '--drag-y': `${dragTranslateY}px` } as CSSProperties)
+    : undefined
+
   return (
     <>
       <button
@@ -100,7 +109,7 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
           opacity: isClosing ? 0 : (isMounted ? 1 : 0),
           transition: 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
           pointerEvents: isClosing ? 'none' : 'auto',
-          willChange: 'opacity'
+          willChange: 'opacity',
         }}
         onClick={requestClose}
         onKeyDown={(e) => {
@@ -111,27 +120,22 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
         }}
         aria-label="Close dialog"
       />
-      <div 
+      <div
         className={cn(
-          "fixed z-50 grid bg-background shadow-lg dialog-container",
-          // Mobile: smaller, bottom sheet style (leave space so drag handle is always visible)
-          "inset-x-0 bottom-0 max-h-[80vh] rounded-t-2xl border-t border-l border-r",
-          // Desktop: centered modal
-          "sm:left-1/2 sm:top-[calc(50%+1.5rem)] sm:bottom-auto sm:max-w-2xl sm:max-h-[90vh] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg sm:border sm:mx-0 lg:max-w-4xl lg:max-h-[92vh]",
-          !isDragging && isMounted && !isClosing && "opacity-100 translate-y-0 sm:scale-100",
-          !isDragging && !isMounted && "opacity-0 translate-y-full sm:translate-y-0 sm:scale-95",
-          !isDragging && isClosing && "opacity-0 translate-y-full sm:translate-y-0 sm:scale-95",
-          // Dragging state class
-          isDragging && "dialog-dragging"
+          'fixed z-50 grid bg-background shadow-lg dialog-container',
+          'inset-x-0 bottom-0 max-h-[80vh] rounded-t-2xl border-t border-l border-r',
+          'sm:left-1/2 sm:top-[calc(50%+1.5rem)] sm:bottom-auto sm:max-w-2xl sm:max-h-[90vh] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-lg sm:border sm:mx-0 lg:max-w-4xl lg:max-h-[92vh]',
+          !isDragging && isMounted && !isClosing && 'opacity-100 translate-y-0 sm:scale-100',
+          !isDragging && !isMounted && 'opacity-0 translate-y-full sm:translate-y-0 sm:scale-95',
+          !isDragging && isClosing && 'opacity-0 translate-y-full sm:translate-y-0 sm:scale-95',
+          isDragging && 'dialog-dragging'
         )}
         data-dragging={isDragging ? 'true' : undefined}
         style={{
-          transition: isDragging ? 'none' : (isClosing ? 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)' : 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'),
-          // Use CSS variable for drag transform so CSS !important overrides Tailwind
-          ...(isDragging ? { '--drag-y': `${dragTranslateY}px` } : {}),
+          transition: isDragging ? 'none' : 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+          ...dragStyle,
         }}
       >
-        {/* Mobile: Close handle - ref for non-passive touchmove */}
         <div
           ref={handleRef}
           className="sm:hidden flex justify-center pt-2 pb-1 touch-none cursor-grab active:cursor-grabbing"
@@ -146,8 +150,7 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
         >
           <div className="w-12 h-1 bg-muted-foreground/30 rounded-full pointer-events-none" />
         </div>
-        
-        {/* Header */}
+
         <div className="flex items-center justify-between border-b px-4 py-3 sm:px-6 sm:py-4">
           {title && <h2 className="text-base sm:text-2xl font-semibold pr-2 truncate flex-1">{title}</h2>}
           <Button
@@ -160,8 +163,7 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
             <X className="h-5 w-5 sm:h-4 sm:w-4" />
           </Button>
         </div>
-        
-        {/* Content */}
+
         <div
           className="overflow-y-auto overscroll-contain px-4 pt-4 pb-4 sm:px-6 sm:pt-8 sm:pb-6"
           style={{
@@ -185,25 +187,17 @@ const Dialog = ({ open, onOpenChange, children, title }) => {
   )
 }
 
-const DialogContent = ({ className, children, ...props }) => {
+interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
+  className?: string
+  children?: ReactNode
+}
+
+const DialogContent = ({ className, children, ...props }: DialogContentProps) => {
   return (
-    <div className={cn("", className)} {...props}>
+    <div className={cn('', className)} {...props}>
       {children}
     </div>
   )
 }
 
-Dialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onOpenChange: PropTypes.func.isRequired,
-  children: PropTypes.node,
-  title: PropTypes.string
-}
-
-DialogContent.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.node
-}
-
 export { Dialog, DialogContent }
-

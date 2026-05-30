@@ -1,17 +1,27 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
-import PropTypes from 'prop-types'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Calendar, MapPin, Book, Lightbulb, Users, Star, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePhilosophers } from '@/context/PhilosopherContext'
 import { ImageSkeleton } from '@/components/Skeleton'
+import type { Philosopher } from '@/types/philosopher'
 
-const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, onOpenChange }) {
+interface PhilosopherDetailProps {
+  philosopher: Philosopher | null
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+const PhilosopherDetail = memo(function PhilosopherDetail({
+  philosopher,
+  open,
+  onOpenChange,
+}: PhilosopherDetailProps) {
   const { toggleFavorite, isFavorite } = usePhilosophers()
   const [imageLoading, setImageLoading] = useState(true)
   const [shareFeedback, setShareFeedback] = useState('')
-  const shareFeedbackTimerRef = useRef(null)
-  
+  const shareFeedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   useEffect(() => {
     if (!philosopher) return
     setImageLoading(true)
@@ -30,7 +40,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
     if (!philosopher) return ''
     const baseUrl = import.meta.env.BASE_URL ?? '/'
     const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
-    const origin = globalThis?.location?.origin ?? ''
+    const origin = globalThis.location?.origin ?? ''
     const url = new URL(`${base}map`, origin || 'http://localhost')
     url.searchParams.set('philosopher', String(philosopher.id))
     return url.toString()
@@ -61,7 +71,6 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
       await navigator.clipboard.writeText(shareUrl)
       setShareFeedback('Link kopyalandı')
     } catch {
-      // ignore if clipboard not available
       setShareFeedback('Kopyalanamadı')
     }
     if (shareFeedbackTimerRef.current) clearTimeout(shareFeedbackTimerRef.current)
@@ -71,7 +80,6 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
   return (
     <Dialog open={open} onOpenChange={onOpenChange} title={philosopher.name}>
       <DialogContent className="space-y-3 sm:space-y-6 text-xs sm:text-base lg:text-lg">
-        {/* Fotoğraf ve Temel Bilgiler */}
         <div className="flex flex-col md:flex-row gap-3 sm:gap-6 lg:gap-8 animate-smooth-fade-in">
           <div className="flex-shrink-0 mx-auto md:mx-0 relative">
             {imageLoading && (
@@ -86,7 +94,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
               loading="lazy"
               onLoad={() => setImageLoading(false)}
               onError={(e) => {
-                e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(philosopher.name)}&backgroundColor=b6e3f4`
+                e.currentTarget.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(philosopher.name)}&backgroundColor=b6e3f4`
                 setImageLoading(false)
               }}
             />
@@ -113,8 +121,8 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
                   size="icon"
                   onClick={() => toggleFavorite(philosopher)}
                   className="transition-all duration-200 ease-out hover:scale-110 active:scale-95"
-                  aria-label={favorite ? "Favorilerden çıkar" : "Favorilere ekle"}
-                  title={favorite ? "Favorilerden çıkar" : "Favorilere ekle"}
+                  aria-label={favorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+                  title={favorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}
                 >
                   <Star
                     className={`h-5 w-5 sm:h-6 sm:w-6 transition-all duration-200 ease-out ${
@@ -134,12 +142,12 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
                 {shareFeedback}
               </p>
             )}
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-4 lg:gap-5 text-[10px] sm:text-sm lg:text-base">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <span>
-                  {Math.abs(philosopher.birthYear)} {philosopher.birthYear < 0 ? 'MÖ' : 'MS'} - 
+                  {Math.abs(philosopher.birthYear)} {philosopher.birthYear < 0 ? 'MÖ' : 'MS'} -
                   {' '}{Math.abs(philosopher.deathYear)} {philosopher.deathYear < 0 ? 'MÖ' : 'MS'}
                 </span>
               </div>
@@ -159,13 +167,11 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
           </div>
         </div>
 
-        {/* Biyografi */}
         <div className="mt-4 sm:mt-6">
           <h4 className="text-xs sm:text-lg lg:text-xl font-semibold mb-2 sm:mb-3">Biyografi</h4>
           <p className="text-[10px] sm:text-base lg:text-lg leading-relaxed text-foreground">{philosopher.biography}</p>
         </div>
 
-        {/* Eserler */}
         {philosopher.works && philosopher.works.length > 0 && (
           <div className="animate-smooth-fade-in" style={{ animationDelay: '0.1s' }}>
             <h4 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 flex items-center gap-2">
@@ -174,8 +180,8 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
             </h4>
             <div className="space-y-2">
               {philosopher.works.map((work, index) => (
-                <div 
-                  key={`work-${philosopher.id}-${index}-${work.title}`} 
+                <div
+                  key={`work-${philosopher.id}-${index}-${work.title}`}
                   className="p-2 sm:p-3 bg-muted rounded-lg transition-all duration-200 ease-out hover:bg-muted/80 hover:shadow-md animate-smooth-scale-in"
                   style={{ animationDelay: `${0.15 + index * 0.05}s` }}
                 >
@@ -189,7 +195,6 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
           </div>
         )}
 
-        {/* Temel Fikirler */}
         {philosopher.keyIdeas && philosopher.keyIdeas.length > 0 && (
           <div className="animate-smooth-fade-in" style={{ animationDelay: '0.15s' }}>
             <h4 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 flex items-center gap-2">
@@ -210,8 +215,7 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
           </div>
         )}
 
-        {/* Etkileşimler */}
-        {(philosopher.influences?.length > 0 || philosopher.influenced?.length > 0) && (
+        {((philosopher.influences?.length ?? 0) > 0 || (philosopher.influenced?.length ?? 0) > 0) && (
           <div className="animate-smooth-fade-in" style={{ animationDelay: '0.2s' }}>
             <h4 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 flex items-center gap-2">
               <Users className="h-5 w-5 transition-transform duration-300 hover:scale-110" />
@@ -258,31 +262,4 @@ const PhilosopherDetail = memo(function PhilosopherDetail({ philosopher, open, o
   )
 })
 
-PhilosopherDetail.propTypes = {
-  philosopher: PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    name: PropTypes.string.isRequired,
-    nameEn: PropTypes.string,
-    photo: PropTypes.string,
-    birthYear: PropTypes.number.isRequired,
-    deathYear: PropTypes.number.isRequired,
-    birthCity: PropTypes.string.isRequired,
-    period: PropTypes.string.isRequired,
-    school: PropTypes.string.isRequired,
-    biography: PropTypes.string,
-    works: PropTypes.arrayOf(
-      PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        description: PropTypes.string,
-      })
-    ),
-    keyIdeas: PropTypes.arrayOf(PropTypes.string),
-    influences: PropTypes.arrayOf(PropTypes.string),
-    influenced: PropTypes.arrayOf(PropTypes.string),
-  }),
-  open: PropTypes.bool.isRequired,
-  onOpenChange: PropTypes.func.isRequired,
-}
-
 export default PhilosopherDetail
-
