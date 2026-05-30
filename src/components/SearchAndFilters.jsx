@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Search, X, History, Filter } from 'lucide-react'
+import { Search, X, History, Filter, Star, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
@@ -40,6 +40,8 @@ function SearchAndFilters({ open, onOpenChange }) {
     addToSearchHistory,
     setSelectedPhilosopher,
     addToRecentlyViewed,
+    favorites,
+    recentlyViewed,
   } = usePhilosophers()
 
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -104,6 +106,12 @@ function SearchAndFilters({ open, onOpenChange }) {
     setSearchQuery('')
     setFilters({ period: 'all', school: 'all', city: 'all' })
     setTimeRange({ start: minYear, end: maxYear })
+  }
+
+  const openPhilosopher = (philosopher) => {
+    setSelectedPhilosopher(philosopher)
+    addToRecentlyViewed(philosopher)
+    onOpenChange(false)
   }
 
   return (
@@ -210,6 +218,52 @@ function SearchAndFilters({ open, onOpenChange }) {
               </div>
             )}
           </div>
+
+          {favorites.length > 0 && (
+            <div className="mt-4 animate-smooth-fade-in">
+              <div className="flex items-center gap-2 mb-2">
+                <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                <h4 className="text-sm font-medium">Favoriler</h4>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {favorites.map((philosopher) => (
+                  <Button
+                    key={philosopher.id}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => openPhilosopher(philosopher)}
+                  >
+                    {philosopher.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {recentlyViewed.length > 0 && (
+            <div className="mt-4 animate-smooth-fade-in">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <h4 className="text-sm font-medium">Son Görüntülenenler</h4>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {recentlyViewed.map((philosopher) => (
+                  <Button
+                    key={philosopher.id}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => openPhilosopher(philosopher)}
+                  >
+                    {philosopher.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">

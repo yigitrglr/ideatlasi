@@ -5,6 +5,10 @@ import { safeGetItem, safeSetItem } from '@/lib/safeStorage'
 
 const PhilosopherContext = createContext()
 
+function findPhilosopherById(philosophers, id) {
+  return philosophers.find(p => String(p.id) === String(id))
+}
+
 export function PhilosopherProvider({ children }) {
   const [philosophers] = useState(philosophersData)
   const [selectedPhilosopher, setSelectedPhilosopher] = useState(null)
@@ -65,7 +69,7 @@ export function PhilosopherProvider({ children }) {
     if (stored) {
       try {
         const parsed = JSON.parse(stored)
-        return parsed.map(id => philosophers.find(p => p.id === id)).filter(Boolean)
+        return parsed.map(id => findPhilosopherById(philosophers, id)).filter(Boolean)
       } catch (e) {
         console.error('Error loading recently viewed:', e)
       }
@@ -79,7 +83,7 @@ export function PhilosopherProvider({ children }) {
     if (stored) {
       try {
         const parsed = JSON.parse(stored)
-        return parsed.map(id => philosophers.find(p => p.id === id)).filter(Boolean)
+        return parsed.map(id => findPhilosopherById(philosophers, id)).filter(Boolean)
       } catch (e) {
         console.error('Error loading favorites:', e)
       }
@@ -93,7 +97,7 @@ export function PhilosopherProvider({ children }) {
     if (!stored) return
     try {
       const parsed = JSON.parse(stored)
-      const updated = parsed.map(id => philosophers.find(p => p.id === id)).filter(Boolean)
+      const updated = parsed.map(id => findPhilosopherById(philosophers, id)).filter(Boolean)
       setFavorites(updated)
     } catch (e) {
       console.error('Error updating favorites:', e)
